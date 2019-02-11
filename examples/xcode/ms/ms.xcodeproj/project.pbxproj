@@ -1,0 +1,547 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		81FBF44B221157330001A10F /* mongoose.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FBF445221157330001A10F /* mongoose.h */; };
+		81FBF44C221157330001A10F /* ms.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FBF446221157330001A10F /* ms.h */; };
+		81FBF44D221157330001A10F /* queue.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FBF44A221157330001A10F /* queue.h */; };
+		81FBF462221157720001A10F /* ms_http_pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FBF44F221157710001A10F /* ms_http_pipe.h */; };
+		81FBF463221157720001A10F /* ms_memory_pool.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FBF450221157710001A10F /* ms_memory_pool.h */; };
+		81FBF464221157720001A10F /* ms_session.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FBF451221157710001A10F /* ms_session.h */; };
+		81FBF465221157720001A10F /* ms_task.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FBF452221157710001A10F /* ms_task.h */; };
+		81FBF466221157720001A10F /* ms_file_storage.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FBF453221157710001A10F /* ms_file_storage.h */; };
+		81FBF467221157720001A10F /* ms_server.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FBF454221157710001A10F /* ms_server.c */; };
+		81FBF468221157720001A10F /* ms_mem_storage.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FBF455221157710001A10F /* ms_mem_storage.h */; };
+		81FBF469221157720001A10F /* ms_memory_pool.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FBF456221157710001A10F /* ms_memory_pool.c */; };
+		81FBF46A221157720001A10F /* ms_http_pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FBF457221157710001A10F /* ms_http_pipe.c */; };
+		81FBF46B221157720001A10F /* ms_session.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FBF458221157710001A10F /* ms_session.c */; };
+		81FBF46C221157720001A10F /* mongoose.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FBF459221157710001A10F /* mongoose.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		81FBF46D221157720001A10F /* ms_task.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FBF45E221157710001A10F /* ms_task.c */; };
+		81FBF46E221157720001A10F /* ms_server.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FBF45F221157710001A10F /* ms_server.h */; };
+		81FBF46F221157720001A10F /* ms_mem_storage.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FBF460221157710001A10F /* ms_mem_storage.c */; };
+		81FBF470221157720001A10F /* ms_file_storage.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FBF461221157710001A10F /* ms_file_storage.c */; };
+		81FBF478221158F10001A10F /* ms_tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 81FBF477221158F10001A10F /* ms_tests.m */; };
+		81FBF47A221158F10001A10F /* libms.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 81FBF43A2211569D0001A10F /* libms.a */; };
+		81FBF490221159290001A10F /* fake_server.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FBF481221159290001A10F /* fake_server.c */; };
+		81FBF491221159290001A10F /* fake_file.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FBF482221159290001A10F /* fake_file.c */; };
+		81FBF492221159290001A10F /* test_mem_storage.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FBF483221159290001A10F /* test_mem_storage.c */; };
+		81FBF493221159290001A10F /* run_tests.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FBF485221159290001A10F /* run_tests.c */; };
+		81FBF494221159290001A10F /* test_file_storage.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FBF489221159290001A10F /* test_file_storage.c */; };
+		81FBF495221159290001A10F /* test_task.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FBF48A221159290001A10F /* test_task.c */; };
+		81FBF497221159290001A10F /* fake_reader.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FBF48C221159290001A10F /* fake_reader.c */; };
+		81FBF498221159290001A10F /* test_server.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FBF48D221159290001A10F /* test_server.c */; };
+		81FBF499221159290001A10F /* fake_pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FBF48F221159290001A10F /* fake_pipe.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		81FBF47B221158F10001A10F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 81FBF4322211569D0001A10F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 81FBF4392211569D0001A10F;
+			remoteInfo = ms;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		81FBF43A2211569D0001A10F /* libms.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libms.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		81FBF445221157330001A10F /* mongoose.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mongoose.h; sourceTree = "<group>"; };
+		81FBF446221157330001A10F /* ms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms.h; sourceTree = "<group>"; };
+		81FBF44A221157330001A10F /* queue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = queue.h; sourceTree = "<group>"; };
+		81FBF44F221157710001A10F /* ms_http_pipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_http_pipe.h; sourceTree = "<group>"; };
+		81FBF450221157710001A10F /* ms_memory_pool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_memory_pool.h; sourceTree = "<group>"; };
+		81FBF451221157710001A10F /* ms_session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_session.h; sourceTree = "<group>"; };
+		81FBF452221157710001A10F /* ms_task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_task.h; sourceTree = "<group>"; };
+		81FBF453221157710001A10F /* ms_file_storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_file_storage.h; sourceTree = "<group>"; };
+		81FBF454221157710001A10F /* ms_server.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_server.c; sourceTree = "<group>"; };
+		81FBF455221157710001A10F /* ms_mem_storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_mem_storage.h; sourceTree = "<group>"; };
+		81FBF456221157710001A10F /* ms_memory_pool.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_memory_pool.c; sourceTree = "<group>"; };
+		81FBF457221157710001A10F /* ms_http_pipe.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_http_pipe.c; sourceTree = "<group>"; };
+		81FBF458221157710001A10F /* ms_session.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_session.c; sourceTree = "<group>"; };
+		81FBF459221157710001A10F /* mongoose.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mongoose.c; sourceTree = "<group>"; };
+		81FBF45E221157710001A10F /* ms_task.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_task.c; sourceTree = "<group>"; };
+		81FBF45F221157710001A10F /* ms_server.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_server.h; sourceTree = "<group>"; };
+		81FBF460221157710001A10F /* ms_mem_storage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_mem_storage.c; sourceTree = "<group>"; };
+		81FBF461221157710001A10F /* ms_file_storage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_file_storage.c; sourceTree = "<group>"; };
+		81FBF475221158F10001A10F /* ms_tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ms_tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		81FBF477221158F10001A10F /* ms_tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ms_tests.m; sourceTree = "<group>"; };
+		81FBF479221158F10001A10F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		81FBF481221159290001A10F /* fake_server.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fake_server.c; sourceTree = "<group>"; };
+		81FBF482221159290001A10F /* fake_file.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fake_file.c; sourceTree = "<group>"; };
+		81FBF483221159290001A10F /* test_mem_storage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test_mem_storage.c; sourceTree = "<group>"; };
+		81FBF484221159290001A10F /* fake_pipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fake_pipe.h; sourceTree = "<group>"; };
+		81FBF485221159290001A10F /* run_tests.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = run_tests.c; sourceTree = "<group>"; };
+		81FBF486221159290001A10F /* fake_reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fake_reader.h; sourceTree = "<group>"; };
+		81FBF487221159290001A10F /* fake_file.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fake_file.h; sourceTree = "<group>"; };
+		81FBF488221159290001A10F /* fake_server.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fake_server.h; sourceTree = "<group>"; };
+		81FBF489221159290001A10F /* test_file_storage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test_file_storage.c; sourceTree = "<group>"; };
+		81FBF48A221159290001A10F /* test_task.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test_task.c; sourceTree = "<group>"; };
+		81FBF48C221159290001A10F /* fake_reader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fake_reader.c; sourceTree = "<group>"; };
+		81FBF48D221159290001A10F /* test_server.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test_server.c; sourceTree = "<group>"; };
+		81FBF48E221159290001A10F /* run_tests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = run_tests.h; sourceTree = "<group>"; };
+		81FBF48F221159290001A10F /* fake_pipe.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fake_pipe.c; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		81FBF4382211569D0001A10F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81FBF472221158F10001A10F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81FBF47A221158F10001A10F /* libms.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		81FBF4312211569D0001A10F = {
+			isa = PBXGroup;
+			children = (
+				81FBF441221157020001A10F /* Source */,
+				81FBF476221158F10001A10F /* ms_tests */,
+				81FBF43B2211569D0001A10F /* Products */,
+			);
+			indentWidth = 2;
+			sourceTree = "<group>";
+			tabWidth = 2;
+		};
+		81FBF43B2211569D0001A10F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				81FBF43A2211569D0001A10F /* libms.a */,
+				81FBF475221158F10001A10F /* ms_tests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		81FBF441221157020001A10F /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				81FBF443221157330001A10F /* include */,
+				81FBF44E221157710001A10F /* src */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		81FBF443221157330001A10F /* include */ = {
+			isa = PBXGroup;
+			children = (
+				81FBF445221157330001A10F /* mongoose.h */,
+				81FBF446221157330001A10F /* ms.h */,
+				81FBF44A221157330001A10F /* queue.h */,
+			);
+			name = include;
+			path = ../../../../include;
+			sourceTree = "<group>";
+		};
+		81FBF44E221157710001A10F /* src */ = {
+			isa = PBXGroup;
+			children = (
+				81FBF459221157710001A10F /* mongoose.c */,
+				81FBF461221157710001A10F /* ms_file_storage.c */,
+				81FBF453221157710001A10F /* ms_file_storage.h */,
+				81FBF457221157710001A10F /* ms_http_pipe.c */,
+				81FBF44F221157710001A10F /* ms_http_pipe.h */,
+				81FBF460221157710001A10F /* ms_mem_storage.c */,
+				81FBF455221157710001A10F /* ms_mem_storage.h */,
+				81FBF456221157710001A10F /* ms_memory_pool.c */,
+				81FBF450221157710001A10F /* ms_memory_pool.h */,
+				81FBF454221157710001A10F /* ms_server.c */,
+				81FBF45F221157710001A10F /* ms_server.h */,
+				81FBF458221157710001A10F /* ms_session.c */,
+				81FBF451221157710001A10F /* ms_session.h */,
+				81FBF45E221157710001A10F /* ms_task.c */,
+				81FBF452221157710001A10F /* ms_task.h */,
+			);
+			name = src;
+			path = ../../../../src;
+			sourceTree = "<group>";
+		};
+		81FBF476221158F10001A10F /* ms_tests */ = {
+			isa = PBXGroup;
+			children = (
+				81FBF480221159290001A10F /* test */,
+				81FBF477221158F10001A10F /* ms_tests.m */,
+				81FBF479221158F10001A10F /* Info.plist */,
+			);
+			path = ms_tests;
+			sourceTree = "<group>";
+		};
+		81FBF480221159290001A10F /* test */ = {
+			isa = PBXGroup;
+			children = (
+				81FBF482221159290001A10F /* fake_file.c */,
+				81FBF487221159290001A10F /* fake_file.h */,
+				81FBF48F221159290001A10F /* fake_pipe.c */,
+				81FBF484221159290001A10F /* fake_pipe.h */,
+				81FBF48C221159290001A10F /* fake_reader.c */,
+				81FBF486221159290001A10F /* fake_reader.h */,
+				81FBF481221159290001A10F /* fake_server.c */,
+				81FBF488221159290001A10F /* fake_server.h */,
+				81FBF485221159290001A10F /* run_tests.c */,
+				81FBF48E221159290001A10F /* run_tests.h */,
+				81FBF489221159290001A10F /* test_file_storage.c */,
+				81FBF483221159290001A10F /* test_mem_storage.c */,
+				81FBF48D221159290001A10F /* test_server.c */,
+				81FBF48A221159290001A10F /* test_task.c */,
+			);
+			name = test;
+			path = ../../../../test;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		81FBF4362211569D0001A10F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81FBF463221157720001A10F /* ms_memory_pool.h in Headers */,
+				81FBF462221157720001A10F /* ms_http_pipe.h in Headers */,
+				81FBF466221157720001A10F /* ms_file_storage.h in Headers */,
+				81FBF44D221157330001A10F /* queue.h in Headers */,
+				81FBF464221157720001A10F /* ms_session.h in Headers */,
+				81FBF465221157720001A10F /* ms_task.h in Headers */,
+				81FBF44C221157330001A10F /* ms.h in Headers */,
+				81FBF46E221157720001A10F /* ms_server.h in Headers */,
+				81FBF468221157720001A10F /* ms_mem_storage.h in Headers */,
+				81FBF44B221157330001A10F /* mongoose.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		81FBF4392211569D0001A10F /* ms */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 81FBF43E2211569D0001A10F /* Build configuration list for PBXNativeTarget "ms" */;
+			buildPhases = (
+				81FBF4362211569D0001A10F /* Headers */,
+				81FBF4372211569D0001A10F /* Sources */,
+				81FBF4382211569D0001A10F /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ms;
+			productName = ms;
+			productReference = 81FBF43A2211569D0001A10F /* libms.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		81FBF474221158F10001A10F /* ms_tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 81FBF47D221158F10001A10F /* Build configuration list for PBXNativeTarget "ms_tests" */;
+			buildPhases = (
+				81FBF471221158F10001A10F /* Sources */,
+				81FBF472221158F10001A10F /* Frameworks */,
+				81FBF473221158F10001A10F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				81FBF47C221158F10001A10F /* PBXTargetDependency */,
+			);
+			name = ms_tests;
+			productName = ms_tests;
+			productReference = 81FBF475221158F10001A10F /* ms_tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		81FBF4322211569D0001A10F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1010;
+				ORGANIZATIONNAME = libms;
+				TargetAttributes = {
+					81FBF4392211569D0001A10F = {
+						CreatedOnToolsVersion = 10.1;
+					};
+					81FBF474221158F10001A10F = {
+						CreatedOnToolsVersion = 10.1;
+					};
+				};
+			};
+			buildConfigurationList = 81FBF4352211569D0001A10F /* Build configuration list for PBXProject "ms" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 81FBF4312211569D0001A10F;
+			productRefGroup = 81FBF43B2211569D0001A10F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				81FBF4392211569D0001A10F /* ms */,
+				81FBF474221158F10001A10F /* ms_tests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		81FBF473221158F10001A10F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		81FBF4372211569D0001A10F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81FBF46B221157720001A10F /* ms_session.c in Sources */,
+				81FBF46A221157720001A10F /* ms_http_pipe.c in Sources */,
+				81FBF46D221157720001A10F /* ms_task.c in Sources */,
+				81FBF46C221157720001A10F /* mongoose.c in Sources */,
+				81FBF46F221157720001A10F /* ms_mem_storage.c in Sources */,
+				81FBF470221157720001A10F /* ms_file_storage.c in Sources */,
+				81FBF469221157720001A10F /* ms_memory_pool.c in Sources */,
+				81FBF467221157720001A10F /* ms_server.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81FBF471221158F10001A10F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81FBF491221159290001A10F /* fake_file.c in Sources */,
+				81FBF498221159290001A10F /* test_server.c in Sources */,
+				81FBF495221159290001A10F /* test_task.c in Sources */,
+				81FBF492221159290001A10F /* test_mem_storage.c in Sources */,
+				81FBF497221159290001A10F /* fake_reader.c in Sources */,
+				81FBF478221158F10001A10F /* ms_tests.m in Sources */,
+				81FBF494221159290001A10F /* test_file_storage.c in Sources */,
+				81FBF493221159290001A10F /* run_tests.c in Sources */,
+				81FBF499221159290001A10F /* fake_pipe.c in Sources */,
+				81FBF490221159290001A10F /* fake_server.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		81FBF47C221158F10001A10F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 81FBF4392211569D0001A10F /* ms */;
+			targetProxy = 81FBF47B221158F10001A10F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		81FBF43C2211569D0001A10F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		81FBF43D2211569D0001A10F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		81FBF43F2211569D0001A10F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		81FBF4402211569D0001A10F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		81FBF47E221158F10001A10F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = ms_tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.libms.ms-tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		81FBF47F221158F10001A10F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = ms_tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.libms.ms-tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		81FBF4352211569D0001A10F /* Build configuration list for PBXProject "ms" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81FBF43C2211569D0001A10F /* Debug */,
+				81FBF43D2211569D0001A10F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		81FBF43E2211569D0001A10F /* Build configuration list for PBXNativeTarget "ms" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81FBF43F2211569D0001A10F /* Debug */,
+				81FBF4402211569D0001A10F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		81FBF47D221158F10001A10F /* Build configuration list for PBXNativeTarget "ms_tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81FBF47E221158F10001A10F /* Debug */,
+				81FBF47F221158F10001A10F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 81FBF4322211569D0001A10F /* Project object */;
+}
