@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+    crossorigin="anonymous">
+
+  <title>Hello, world!</title>
+</head>
+
+<body>
+  <!-- <h1>Hello, world!</h1> -->
+
+  <div class="container">
+    <div class="row">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="url" aria-label="url" aria-describedby="button-addon2">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="button" id="button-addon2">Play</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="embed-responsive embed-responsive-16by9">
+          <video class="embed-responsive-item" controls>
+            <source src="wildo.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <div class="col">
+        <table class="table table-borderless">
+          <tbody>
+            <tr>
+              <td name="speed">100kb/s</td>
+              <td name="size">10M/100M</td>
+              <td name="percent">20%</td>
+            </tr>
+          </tbody>
+        </table>
+        <ul class="list-group">
+          <li class="list-group-item">
+            <div class="progress">
+              <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25"
+                aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="progress">
+              <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                aria-valuemax="100"></div>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="progress">
+              <div class="progress-bar bg-warning" role="progressbar" style="width: 75%" aria-valuenow="75"
+                aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="progress">
+              <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100"
+                aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+    crossorigin="anonymous"></script>
+
+  <script type="text/javascript">
+
+    function humanFileSize(bytes, si) {
+      var thresh = si ? 1000 : 1024;
+      if (Math.abs(bytes) < thresh) {
+        return bytes + ' B';
+      }
+      var units = si
+        ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+        : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+      var u = -1;
+      do {
+        bytes /= thresh;
+        ++u;
+      } while (Math.abs(bytes) >= thresh && u < units.length - 1);
+      return bytes.toFixed(1) + ' ' + units[u];
+    }
+
+    var data = {
+      speed: 1024 * 100,
+      filesize: 1024 * 1024 * 30,
+      download_size: 1024 * 1024,
+      readers: [
+        {
+          pos: 1024*455
+        }
+      ],
+      contents: [
+        {
+          pos: 1024,
+          len: 1024
+        }, {
+          pos: 1024*3,
+          len: 1024*30
+        }
+      ],
+      pipes: [
+        {
+          name: "0x444555",
+          pos: 1024*8,
+          len: 1024*933
+        }, {
+          name: "0x444785",
+          pos: 1024*44,
+          len: 1024*74
+        }
+      ]
+    };
+
+
+    function updateProgress(data) {
+      $("td[name='speed']").text(humanFileSize(data.speed) + '/s');
+      $("td[name='size']").text(humanFileSize(data.download_size) + '/' + humanFileSize(data.filesize));
+      $("td[name='percent']").text((data.download_size / data.filesize * 100).toFixed(1) + '%');
+    }
+
+    updateProgress(data);
+
+  </script>
+
+
+
+</body>
+
+</html>
