@@ -64,7 +64,13 @@ static void pipe_handler(struct mg_connection *nc, int ev, void *ev_data) {
     return;
   }
   
-  if (ev == MG_EV_RECV) {
+  if (ev == MG_EV_CONNECT) {
+    int connect_status = * (int *) ev_data;
+    if (connect_status != 0) {
+      MS_DBG("connect() error: %s\n", strerror(connect_status));
+      http_pipe->pipe.callback.on_close(&http_pipe->pipe, 502);
+    }
+  } else if (ev == MG_EV_RECV) {
     
   } else if (ev == MG_EV_HTTP_CHUNK) {
     struct http_message *hm = (struct http_message *)ev_data;
@@ -183,7 +189,8 @@ static void pipe_handler(struct mg_connection *nc, int ev, void *ev_data) {
       http_pipe->pipe.callback.on_close(&http_pipe->pipe, hm->resp_code);
     }
   } else if (ev == MG_EV_CLOSE) {
-    http_pipe->pipe.callback.on_close(&http_pipe->pipe, 0);
+    // TODO: get error code if error.
+    http_pipe->pipe.callback.on_close(&http_pipe->pipe, 502);
     if (http_pipe->closing) {
       free_pipe(http_pipe);
     }

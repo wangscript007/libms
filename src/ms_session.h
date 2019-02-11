@@ -28,6 +28,8 @@ struct ms_session *ms_session_open(struct mg_connection *nc, struct http_message
 
 size_t ms_session_try_transfer_data(struct ms_session *session);
 
+void ms_session_close_if_need(struct ms_session *session);
+
 void ms_session_close(struct ms_session *session);
 
 
