@@ -26,6 +26,7 @@ struct ms_task {
   void    *user_data;
   double  close_ts;
   
+  // if one pipe error, then this task error.
   int     code;
 };
 

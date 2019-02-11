@@ -26,10 +26,11 @@ typedef void (*on_case_done)(void);
         XX(SERVER_3,          server_3)                      \
         XX(SERVER_4,          server_4)                      \
         XX(SERVER_5,          server_5)                      \
-        XX(SERVER_6,          server_6)
+        XX(SERVER_6,          server_6)                      \
+        XX(SERVER_INVALID,    server_invalid)                \
+        XX(SERVER_ERROR,      server_error)                  \
+        XX(SERVER_CLOSE,      server_close)                  \
 
-//        XX(SERVER_ERROR,      server_error)                  \
-//        XX(SERVER_CLOSE,      server_close)                  \
 //        XX(SERVER_REDIRECT_1, server_redirect1)              \
 //        XX(SERVER_REDIRECT_2, server_redirect2)              \
 //        XX(SERVER_REDIRECT_3, server_redirect3)              \
@@ -37,12 +38,14 @@ typedef void (*on_case_done)(void);
 
 
 #define TEST_CASE_MAP2(XX)                                    \
+        XX(SERVER_INVALID,    server_invalid)                \
         XX(SERVER_ERROR,      server_error)                  \
         XX(SERVER_CLOSE,      server_close)                  \
-        XX(SERVER_REDIRECT_1, server_redirect1)              \
-        XX(SERVER_REDIRECT_2, server_redirect2)              \
-        XX(SERVER_REDIRECT_3, server_redirect3)              \
-        XX(SERVER_REDIRECT_4, server_redirect4)              \
+
+//        XX(SERVER_REDIRECT_1, server_redirect1)              \
+//        XX(SERVER_REDIRECT_2, server_redirect2)              \
+//        XX(SERVER_REDIRECT_3, server_redirect3)              \
+//        XX(SERVER_REDIRECT_4, server_redirect4)              \
 
 
 #define GEN_TEST_ENTRY(i, f) void test_##f(on_case_done);

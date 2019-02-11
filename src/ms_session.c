@@ -118,6 +118,9 @@ static size_t try_transfer_data(struct ms_session *session) {
 
 static void on_send(struct ms_ireader *reader, int num_sent_bytes) {
   struct ms_session *session = (struct ms_session *)reader;
+  if (session->connection->flags & MG_F_SEND_AND_CLOSE) {
+    return;
+  }
   int body_len = num_sent_bytes;
   if (session->reader.header_sending > 0) {
     if (session->reader.header_sending > num_sent_bytes) {
@@ -147,6 +150,7 @@ static void on_send(struct ms_ireader *reader, int num_sent_bytes) {
   }
   
   try_transfer_data(session);
+  ms_session_close_if_need(session);
 }
 
 static void on_filesize(struct ms_ireader *reader, int64_t filesize) {
@@ -169,11 +173,12 @@ static void on_recv(struct ms_ireader *reader, int64_t pos, size_t len) {
   struct ms_session *session = (struct ms_session *)reader;
   //    MS_DBG("session:%p recv:(%lld, %zu, %lld)", session, pos, len, pos + len);
   try_transfer_data(session);
+  ms_session_close_if_need(session);
 }
 
 static void on_error(struct ms_ireader *reader, int code) {
   struct ms_session *session = (struct ms_session *)reader;
-  mg_http_send_error(session->connection, code, NULL);
+  ms_session_close_if_need(session);
 }
 
 //static void on_close(struct ms_reader *reader)
@@ -230,6 +235,20 @@ struct ms_session *ms_session_open(struct mg_connection *nc, struct http_message
 
 size_t ms_session_try_transfer_data(struct ms_session *session) {
   return try_transfer_data(session);
+}
+
+void ms_session_close_if_need(struct ms_session *session) {
+  int task_code = session->task->get_errno(session->task);
+  if (task_code == 0 || session->reader.sending > 0 || session->reader.header_sending > 0) {
+    return;
+  }
+
+  if (session->connection->flags & MS_F_HEADER_SEND) {
+    session->connection->flags |= MG_F_SEND_AND_CLOSE;
+  } else if (!(session->connection->flags & MG_F_SEND_AND_CLOSE)) {
+    mg_http_send_error(session->connection, task_code, NULL);
+    session->connection->flags |= MG_F_SEND_AND_CLOSE;
+  }
 }
 
 void ms_session_close(struct ms_session *session) {

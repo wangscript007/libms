@@ -50,6 +50,7 @@ struct ms_itask {
   int64_t (*get_estimate_size)(struct ms_itask *task);
   void (*remove_reader)(struct ms_itask *task, struct ms_ireader *reader);
   void (*close)(struct ms_itask *task);
+  int (*get_errno)(struct ms_itask *task);
 };
 
 struct ms_ipipe;

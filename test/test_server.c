@@ -14,6 +14,7 @@ struct ms_test_client {
   int64_t pos;
   int64_t size;
   int     fp;
+  int     complete;
   on_case_done callback;
 };
 
@@ -53,7 +54,9 @@ static void test_handler(struct mg_connection *nc, int ev, void *ev_data) {
     nc->flags |= MG_F_DELETE_CHUNK;
   } else if (ev == MG_EV_HTTP_REPLY) {
     nc->flags |= MG_F_CLOSE_IMMEDIATELY;
+    client->complete = 1;
   } else if (ev == MG_EV_CLOSE) {
+    MS_ASSERT(client->complete);
     if (client->callback) {
       client->callback();
     }
@@ -141,12 +144,11 @@ static void test_server_error_handler(struct mg_connection *nc, int ev, void *ev
     MS_ASSERT(test_case->check == 0);
     struct http_message *hm = (struct http_message *)ev_data;
     MS_ASSERT(hm->resp_code == test_case->expect_code);
+    test_case->check = 1;
     nc->flags |= MG_F_CLOSE_IMMEDIATELY;
   } else if (ev == MG_EV_CLOSE) {
     MS_ASSERT(test_case->check == 1);
-    if (test_case->callback) {
-      test_case->callback();
-    }
+    test_case->callback();
     MS_FREE(test_case);
   }
 }
@@ -181,7 +183,7 @@ void test_server_error(on_case_done callback) {
 
 void test_server_close(on_case_done callback) {
   struct ms_test_server_case *test_case = run_server_test(ms_fake_type_close, callback);
-  test_case->expect_code = 400;
+  test_case->expect_code = 502;
 }
 
 void test_server_redirect1(on_case_done callback) {
@@ -199,4 +201,40 @@ void test_server_redirect3(on_case_done callback) {
 void test_server_redirect4(on_case_done callback) {
   struct ms_test_server_case *test_case = run_server_test(ms_fake_type_error, callback);
   test_case->expect_code = 310;
+}
+
+
+struct ms_test_invalid_server_case {
+  on_case_done callback;
+};
+
+static void test_invalid_handler(struct mg_connection *nc, int ev, void *ev_data) {
+  if (ev != MG_EV_POLL) {
+    MS_DBG("%s", ms_str_of_ev(ev));
+  }
+
+  if (ev == MG_EV_CLOSE) {
+    struct ms_test_invalid_server_case *test_case = (struct ms_test_invalid_server_case *)nc->user_data;
+    test_case->callback();
+  }
+}
+
+void test_server_invalid(on_case_done callback) {
+  struct ms_test_invalid_server_case *test_case = (struct ms_test_invalid_server_case *)MS_MALLOC(sizeof(struct ms_test_invalid_server_case));
+  memset(test_case, 0, sizeof(struct ms_test_invalid_server_case));
+  test_case->callback = callback;
+  
+  char origin_url[MG_MAX_HTTP_REQUEST_SIZE] = "http://127.0.0.1/test.mp4";
+  char ms_url[MG_MAX_HTTP_REQUEST_SIZE] = {0};
+
+  
+  struct ms_url_param param = {origin_url, "test.mp4"};
+  ms_generate_url(&param, ms_url, MG_MAX_HTTP_REQUEST_SIZE);
+  MS_DBG("%s, %s", origin_url, ms_url);
+  
+  char extra_headers[128] = {0};
+  int64_t pos = 0;
+  snprintf(extra_headers, 128, "Range: bytes=%" INT64_FMT "-\r\n", pos);
+  struct mg_connection *nc = mg_connect_http(&ms_default_server()->mgr, test_invalid_handler, ms_url, extra_headers, NULL);
+  nc->user_data = test_case;
 }

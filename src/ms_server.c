@@ -159,6 +159,7 @@ static void stream_handler(struct mg_connection *nc, int ev, void *p) {
       task->task.add_reader(&task->task, (struct ms_ireader *)session);
 //      ms_task_add_reader(task, (struct ms_ireader *)session);
       ms_session_try_transfer_data(session);
+      ms_session_close_if_need(session);
     }
   }
 }

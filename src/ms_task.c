@@ -122,7 +122,6 @@ static void on_recv(struct ms_ipipe *pipe, const char *buf, int64_t pos, size_t 
 static void on_pipe_complete(struct ms_ipipe *pipe) {
   QUEUE_REMOVE(&pipe->node);
   pipe->close(pipe);
-//  ms_http_pipe_close(pipe);
 }
 
 static void on_close(struct ms_ipipe *pipe, int code) {
@@ -132,20 +131,22 @@ static void on_close(struct ms_ipipe *pipe, int code) {
   }
   QUEUE_REMOVE(&pipe->node);
   pipe->close(pipe);
-//  ms_http_pipe_close(pipe);
   
-  if (QUEUE_EMPTY(&task->pipes)) {
-    QUEUE *q;
-    struct ms_ireader *reader = NULL;
-    QUEUE_FOREACH(q, &task->readers) {
-      reader = QUEUE_DATA(q, struct ms_ireader, node);
-      // if no more data, close this reader.
-      
-    }
+  if (task->code == 0) {
+    return;
+  }
+  QUEUE *q;
+  struct ms_ireader *reader = NULL;
+  QUEUE_FOREACH(q, &task->readers) {
+    reader = QUEUE_DATA(q, struct ms_ireader, node);
+    reader->on_error(reader, code);
   }
 }
 
 static void create_pipe_for(struct ms_task *task, struct ms_ireader *reader, int64_t pos, int64_t len) {
+  if (task->code != 0) {
+    return;
+  }
   struct ms_ipipe_callback callback = {
     get_filesize,
     on_header,
@@ -311,6 +312,10 @@ static void task_close(struct ms_itask *task) {
   MS_FREE(t);
 }
 
+static int get_errno(struct ms_itask *task) {
+  return ((struct ms_task *)task)->code;
+}
+
 struct ms_task *ms_task_open(const struct mg_str url, struct ms_factory factory) {
   struct ms_task *task = MS_MALLOC(sizeof(struct ms_task));
   memset(task, 0, sizeof(struct ms_task));
@@ -331,5 +336,6 @@ struct ms_task *ms_task_open(const struct mg_str url, struct ms_factory factory)
   task->task.get_estimate_size = get_task_estimate_size;
   task->task.remove_reader = remove_reader;
   task->task.close = task_close;
+  task->task.get_errno = get_errno;
   return task;
 }
