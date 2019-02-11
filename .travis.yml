@@ -13,4 +13,8 @@ after_success:
   - coveralls --exclude src/mongoose.c --exclude test --exclude build -exclude examples --gcov-options '\-lp'
 notifications:
   email: false
+  slack:
+    rooms:
+      - libms:78ghP7HnfZsLPhR2dMu3gmMm#general
+
   
