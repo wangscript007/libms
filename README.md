@@ -1,7 +1,7 @@
 # libms
 Cross-platform media server.
 
-[![Build Status](https://travis-ci.org/wujianguo/libms.svg?branch=master)](https://travis-ci.org/wujianguo/libms) [![Coverage Status](https://coveralls.io/repos/github/wujianguo/libms/badge.svg?branch=master)](https://coveralls.io/github/wujianguo/testlibms?branch=master)
+[![Build Status](https://travis-ci.org/wujianguo/libms.svg?branch=master)](https://travis-ci.org/wujianguo/libms) [![Coverage Status](https://coveralls.io/repos/github/wujianguo/libms/badge.svg?branch=master)](https://coveralls.io/github/wujianguo/libms?branch=master)
 
 
 
