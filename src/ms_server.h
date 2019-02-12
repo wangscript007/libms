@@ -60,6 +60,7 @@ struct ms_ipipe_callback {
   void    (*on_filesize)(struct ms_ipipe *pipe, int64_t filesize);
   void    (*on_content_size)(struct ms_ipipe *pipe, int64_t pos, int64_t size);
   void    (*on_recv)(struct ms_ipipe *pipe, const char *buf, int64_t pos, size_t len);
+  void    (*on_redirect)(struct ms_ipipe *pipe, struct mg_str location);
   void    (*on_complete)(struct ms_ipipe *pipe);
   void    (*on_close)(struct ms_ipipe *pipe, int code);
 };

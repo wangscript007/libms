@@ -119,6 +119,14 @@ static void on_recv(struct ms_ipipe *pipe, const char *buf, int64_t pos, size_t 
   dispatch_pipe(task, pipe);
 }
 
+static void on_redirect(struct ms_ipipe *pipe, struct mg_str location) {
+  struct ms_task *task = cast_from(pipe->user_data);
+  if (task->redirect_url.p) {
+    MS_FREE((void *)task->redirect_url.p);
+  }
+  task->redirect_url = mg_strdup_nul(location);
+}
+
 static void on_pipe_complete(struct ms_ipipe *pipe) {
   QUEUE_REMOVE(&pipe->node);
   pipe->close(pipe);
@@ -153,12 +161,17 @@ static void create_pipe_for(struct ms_task *task, struct ms_ireader *reader, int
     on_filesize,
     on_content_size,
     on_recv,
+    on_redirect,
     on_pipe_complete,
     on_close
   };
   
 //  struct ms_ipipe *pipe = (struct ms_ipipe *)ms_http_pipe_create(task->url, pos, len, callback);
-  struct ms_ipipe *pipe = task->factory.open_pipe(task->url, pos, len, callback);
+  struct mg_str *url = &task->url;
+  if (task->redirect_url.len > 0) {
+    url = &task->redirect_url;
+  }
+  struct ms_ipipe *pipe = task->factory.open_pipe(*url, pos, len, callback);
 //  QUEUE_INIT(&pipe->node);
   QUEUE_INSERT_TAIL(&task->pipes, &pipe->node);
   pipe->user_data = task;
@@ -308,6 +321,9 @@ static void task_close(struct ms_itask *task) {
 
   t->storage->close(t->storage);
   MS_FREE((void *)t->url.p);
+  if (t->redirect_url.p) {
+    MS_FREE((void *)t->redirect_url.p);
+  }
   QUEUE_REMOVE(&t->node);
   MS_FREE(t);
 }

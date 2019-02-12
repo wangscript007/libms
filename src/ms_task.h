@@ -15,6 +15,7 @@ struct ms_task {
   struct ms_itask task;
   QUEUE   node;
   struct mg_str   url;
+  struct mg_str   redirect_url;
   struct ms_factory factory;
   struct mg_str   content_type;
   struct ms_istorage *storage;
