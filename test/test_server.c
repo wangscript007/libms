@@ -13,6 +13,7 @@
 struct ms_test_client {
   int64_t pos;
   int64_t size;
+  int64_t end;
   int     fp;
   int     complete;
   on_case_done callback;
@@ -57,6 +58,7 @@ static void test_handler(struct mg_connection *nc, int ev, void *ev_data) {
     client->complete = 1;
   } else if (ev == MG_EV_CLOSE) {
     MS_ASSERT(client->complete);
+    MS_ASSERT(client->pos == client->end);
     if (client->callback) {
       client->callback();
     }
@@ -69,7 +71,7 @@ static void run_test(int64_t pos, int64_t len, enum ms_fake_type type, on_case_d
   char origin_url[MG_MAX_HTTP_REQUEST_SIZE] = {0};
   char ms_url[MG_MAX_HTTP_REQUEST_SIZE] = {0};
   
-  struct ms_fake_nc *nct = nc_of(ms_fake_type_normal);
+  struct ms_fake_nc *nct = nc_of(type);
   fake_url(nct, origin_url, MG_MAX_PATH);
   struct ms_url_param param = {origin_url, "test.mp4"};
   ms_generate_url(&param, ms_url, MG_MAX_HTTP_REQUEST_SIZE);
@@ -93,6 +95,7 @@ static void run_test(int64_t pos, int64_t len, enum ms_fake_type type, on_case_d
   } else {
     client->size = len;
   }
+  client->end = client->pos + client->size;
   nc->user_data = client;
 }
 
@@ -199,7 +202,7 @@ void test_server_redirect3(on_case_done callback) {
 }
 
 void test_server_redirect4(on_case_done callback) {
-  struct ms_test_server_case *test_case = run_server_test(ms_fake_type_error, callback);
+  struct ms_test_server_case *test_case = run_server_test(ms_fake_type_redirect_4, callback);
   test_case->expect_code = 310;
 }
 

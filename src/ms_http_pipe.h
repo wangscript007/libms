@@ -27,6 +27,8 @@ struct ms_http_pipe {
   struct mg_str   url;
   struct mg_connection    *nc;
   
+  int             redirect_time;
+  int             redirecting;
   
   //    int             fp;
 };
