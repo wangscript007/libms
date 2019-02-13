@@ -16,7 +16,7 @@
 struct ms_session {
   struct ms_ireader       reader;
   struct mg_connection    *connection;
-  struct http_message     *hm;
+  enum ms_http_method     method;
   struct ms_itask         *task;
   struct mbuf             buf;
   

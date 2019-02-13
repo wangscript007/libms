@@ -67,14 +67,14 @@ static size_t try_transfer_data(struct ms_session *session) {
              "Connection: keep-alive", ct.p, session->reader.pos, session->reader.len - session->reader.pos - 1, session->task->get_filesize(session->task));
     
     int resp_code = 206;
-    if (mg_strcmp(session->hm->method, mg_mk_str("HEAD")) == 0) {
+    if (session->method == MS_HTTP_HEAD) {
       resp_code = 200;
     }
     mg_send_head(session->connection, resp_code, session->reader.len , header_str);
     session->reader.header_sending += session->connection->send_mbuf.len;
   }
 
-  if (mg_strcmp(session->hm->method, mg_mk_str("HEAD")) == 0) {
+  if (session->method == MS_HTTP_HEAD) {
     session->connection->flags |= MG_F_SEND_AND_CLOSE;
     return 0;
   }
@@ -202,7 +202,7 @@ struct ms_session *ms_session_open(struct mg_connection *nc, struct http_message
   MS_DBG("session:%p, nc:%p", session, nc);
   QUEUE_INIT(&session->node);
   QUEUE_INIT(&session->reader.node);
-  session->hm = hm;
+  session->method = ms_http_method_enum(hm->method);
   session->connection = nc;
   session->task = task;
   mbuf_init(&session->buf, MS_SEND_BUF_LIMIT);

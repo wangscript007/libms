@@ -37,6 +37,28 @@ const char* ms_version_string(void) {
   return MS_VERSION_STRING;
 }
 
+static const char *method_strings[] = {
+#define XX(num, name, string) #string,
+  MS_HTTP_METHOD_MAP(XX)
+#undef XX
+};
+
+#ifndef ELEM_AT
+# define ELEM_AT(a, i, v) ((unsigned int) (i) < ARRAY_SIZE(a) ? (a)[(i)] : (v))
+#endif
+
+const char * ms_http_method_str (enum ms_http_method m) {
+  return ELEM_AT(method_strings, m, "<unknown>");
+}
+
+enum ms_http_method ms_http_method_enum(struct mg_str str) {
+#define XX(num, name, string) if (mg_strcmp(str, mg_mk_str(#string)) == 0) { return num;}
+  MS_HTTP_METHOD_MAP(XX)
+#undef XX
+  return MS_HTTP_UNKNOWN;
+}
+
+
 char *ms_str_of_ev(int ev) {
   if (ev == MG_EV_POLL) {
     return "MG_EV_POLL";
