@@ -34,6 +34,68 @@ static struct ms_mem_storage *cast_from(struct ms_istorage *st) {
   return (struct ms_mem_storage *)st;
 }
 
+static int bit_num(uint64_t filesize) {
+  return ceil(1.0 * ceil(1.0 * filesize / MS_PIECE_UNIT_SIZE) / 4);
+}
+
+//static void print_bitfield(struct ms_istorage *st) {
+//  /*
+//   *
+//   *
+//   *
+//   */
+//  MS_ASSERT(MS_PIECE_NUM_OF_PER_BLOCK % 4 == 0);
+//  struct ms_mem_storage *mem_st = cast_from(st);
+//
+//  int bitnum = bit_num(st->get_filesize(st));
+//  char *bitmap = (char *)MS_MALLOC(bitnum + 1);
+//  memset(bitmap, 0, bitnum + 1);
+//  int index_for_bitmap = 0;
+//
+//  int num = block_num(mem_st->estimate_size);
+//  int index_for_block = 0;
+//  for (; index_for_block < num; ++index_for_block) {
+//    struct ms_block *block = mem_st->blocks[index_for_block];
+//    if (!block) {
+//      int inner_index = 0;
+//      for (; inner_index < MS_PIECE_NUM_OF_PER_BLOCK / 4; ++inner_index) {
+//        bitmap[index_for_bitmap++] = '0';
+//        if (index_for_bitmap >= bitnum) {
+//          break;
+//        }
+//      }
+//      continue;
+//    }
+//
+//    int index_for_piece = 0;
+//    int piece_bit = 0;
+//    int index_for_byte = 0;
+//    for (; index_for_piece < MS_PIECE_NUM_OF_PER_BLOCK; ++index_for_piece) {
+//      struct ms_piece *piece = &block->pieces[index_for_piece];
+//      if (piece->buf) {
+//        piece_bit |= 1 << index_for_byte;
+//      }
+//      index_for_byte++;
+//      index_for_byte %= 4;
+//      if (index_for_byte == 0) {
+//        static char hex_map[16] = "0123456789ABCDEF";
+//        bitmap[index_for_bitmap++] = hex_map[piece_bit];
+//        piece_bit = 0;
+//        if (index_for_bitmap >= bitnum) {
+//          break;
+//        }
+//      }
+//    }
+//  }
+//  MS_DBG("mem_st:%p %s", mem_st, bitmap);
+//  MS_FREE(bitmap);
+//}
+//
+//static void update_bitmap(char *bitmap, int block_index, int piece_index) {
+//  int bit_piece_index = block_index * MS_PIECE_NUM_OF_PER_BLOCK / 4 + piece_index;
+//
+//}
+
 static int64_t get_filesize(struct ms_istorage *st) {
   struct ms_mem_storage *mem_st = cast_from(st);
   return mem_st->filesize;
@@ -176,7 +238,8 @@ static size_t storage_write(struct ms_istorage *st, const char *buf, int64_t pos
       break;
     }
   }
-  // MS_DBG("%lld, %zu, write: %zu", pos, len, write);
+//  MS_DBG("%lld, %zu, write: %zu", pos, len, write);
+//  print_bitfield(st);
   return write;
 }
 

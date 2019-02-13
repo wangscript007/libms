@@ -108,7 +108,7 @@ static void pipe_handler(struct mg_connection *nc, int ev, void *ev_data) {
         MS_ASSERT(v);
         struct mg_str cl = mg_strdup_nul(*v);
         int64_t size = to64(cl.p);
-        free((void*)cl.p);
+        MS_FREE((void*)cl.p);
         http_pipe->len = size;
         MS_DBG("pipe:%p Content-Length: %" INT64_FMT ", from:%" INT64_FMT, http_pipe, size, http_pipe->req_pos);
         http_pipe->pipe.callback.on_content_size(&http_pipe->pipe, http_pipe->req_pos, size);
@@ -197,7 +197,7 @@ static void pipe_handler(struct mg_connection *nc, int ev, void *ev_data) {
     
   } else if (ev == MG_EV_HTTP_REPLY) {
     struct http_message *hm = (struct http_message *)ev_data;
-    if (hm->resp_code == 301 || hm->resp_code == 302) {
+    if (hm->resp_code == 301 || hm->resp_code == 302 || hm->resp_code == 307 || hm->resp_code == 308) {
       http_pipe->redirect_time ++;
       if (http_pipe->redirect_time > MS_MAX_REDIRECT_TIME) {
         http_pipe->pipe.callback.on_close(&http_pipe->pipe, 310);
@@ -207,10 +207,12 @@ static void pipe_handler(struct mg_connection *nc, int ev, void *ev_data) {
       MS_ASSERT(v);
       MS_FREE((void *)http_pipe->url.p);
       http_pipe->url = mg_strdup_nul(*v);
-      http_pipe->pipe.callback.on_redirect(&http_pipe->pipe, *v);
+      if (hm->resp_code == 301 || hm->resp_code == 308) {
+        http_pipe->pipe.callback.on_redirect(&http_pipe->pipe, *v);
+      }
       http_pipe->redirecting = 1;
       nc->flags |= MG_F_CLOSE_IMMEDIATELY;
-      MS_DBG("pipe:%p redirect to %s", http_pipe, v->p);
+      MS_DBG("pipe:%p redirect to %.*s", http_pipe, (int)v->len, v->p);
     } else if (hm->resp_code == 200 || hm->resp_code == 206) {
       http_pipe->pipe.callback.on_complete(&http_pipe->pipe);
     } else {

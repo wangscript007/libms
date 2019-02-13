@@ -47,7 +47,9 @@ static void test_handler(struct mg_connection *nc, int ev, void *ev_data) {
       return;
     }
     struct mg_str *v = mg_get_http_header(hm, "Content-Length");
-    int64_t size = to64(v->p);
+    struct mg_str cl = mg_strdup_nul(*v);
+    int64_t size = to64(cl.p);
+    MS_FREE((void *)cl.p);
     MS_ASSERT(size==client->size);
     //        MS_DBG("%lld, %zu, %lld", client->pos, hm->body.len, client->pos + hm->body.len);
     check_buf(client, hm->body.p, client->pos, hm->body.len);
@@ -241,3 +243,51 @@ void test_server_invalid(on_case_done callback) {
   struct mg_connection *nc = mg_connect_http(&ms_default_server()->mgr, test_invalid_handler, ms_url, extra_headers, NULL);
   nc->user_data = test_case;
 }
+/*
+struct ms_test_head_server_case {
+  on_case_done callback;
+  int64_t size;
+  int check;
+};
+
+static void test_head_handler(struct mg_connection *nc, int ev, void *ev_data) {
+  if (ev != MG_EV_POLL) {
+    MS_DBG("%s", ms_str_of_ev(ev));
+  }
+  
+  struct ms_test_head_server_case *test_case = (struct ms_test_head_server_case *)nc->user_data;
+  if (ev == MG_EV_HTTP_REPLY) {
+    struct http_message *hm = (struct http_message *)ev_data;
+    struct mg_str *v = mg_get_http_header(hm, "Content-Length");
+    struct mg_str cl = mg_strdup_nul(*v);
+    int64_t size = to64(cl.p);
+    MS_FREE((void *)cl.p);
+    MS_ASSERT(size == test_case->size);
+    test_case->check = 1;
+  } else if (ev == MG_EV_CLOSE) {
+    MS_ASSERT(test_case->check);
+    test_case->callback();
+  }
+}
+
+void test_server_head(on_case_done callback) {
+  struct ms_test_head_server_case *test_case = (struct ms_test_head_server_case *)MS_MALLOC(sizeof(struct ms_test_head_server_case));
+  memset(test_case, 0, sizeof(struct ms_test_head_server_case));
+  test_case->callback = callback;
+
+  char origin_url[MG_MAX_HTTP_REQUEST_SIZE] = {0};
+  char ms_url[MG_MAX_HTTP_REQUEST_SIZE] = {0};
+
+  struct ms_fake_nc *nct = nc_of(ms_fake_type_normal);
+  fake_url(nct, origin_url, MG_MAX_PATH);
+  struct ms_url_param param = {origin_url, "test.mp4"};
+  ms_generate_url(&param, ms_url, MG_MAX_HTTP_REQUEST_SIZE);
+
+  int64_t pos = 102345;
+  test_case->size = nct->filesize - pos;
+  char extra_headers[128] = {0};
+  snprintf(extra_headers, 128, "Range: bytes=%" INT64_FMT "-\r\n", pos);
+  struct mg_connection *nc = mg_connect_http(&ms_default_server()->mgr, test_head_handler, ms_url, extra_headers, NULL);
+  nc->user_data = test_case;
+}
+*/
