@@ -9,12 +9,6 @@
 #ifndef run_tests_h
 #define run_tests_h
 
-// TODO:
-//  404
-//  301, 302
-//  HEAD
-//  socket closed
-//  task
 
 // async tests
 typedef void (*on_case_done)(void);

@@ -16,6 +16,7 @@
 struct ms_session {
   struct ms_ireader       reader;
   struct mg_connection    *connection;
+  struct http_message     *hm;
   struct ms_itask         *task;
   struct mbuf             buf;
   

@@ -148,7 +148,7 @@ static void stream_handler(struct mg_connection *nc, int ev, void *p) {
   struct ms_server *server = nc->user_data;
   if (ev == MG_EV_HTTP_REQUEST) {
     struct http_message *hm = (struct http_message *)p;
-    MS_ASSERT(mg_strcmp(hm->method, mg_mk_str("GET")) == 0);
+    MS_ASSERT(mg_strcmp(hm->method, mg_mk_str("GET")) == 0 || mg_strcmp(hm->method, mg_mk_str("HEAD")) == 0);
     char url[MG_MAX_HTTP_REQUEST_SIZE] = {0};
     mg_get_http_var(&hm->query_string, "url", url, MG_MAX_HTTP_REQUEST_SIZE);
     MS_DBG("%s", url);

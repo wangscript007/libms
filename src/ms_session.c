@@ -54,6 +54,31 @@ static size_t try_transfer_data(struct ms_session *session) {
     return 0;
   }
   
+  if (!(session->connection->flags & MS_F_HEADER_SEND)) {
+    session->connection->flags |= MS_F_HEADER_SEND;
+    MS_DBG("session:%p, send head content-length: %" INT64_FMT, session, session->reader.len);
+    // TODO: 1. keep-alive 2. proxy headers like `content-type`, 3. reader.len == 0
+    
+    struct mg_str ct = session->task->content_type(session->task);
+    char header_str[MG_MAX_HTTP_SEND_MBUF] = {0};
+    snprintf(header_str, MG_MAX_HTTP_SEND_MBUF, "Content-Type: %s\r\n"
+             "Accept-Ranges: bytes\r\n"
+             "Content-Range: bytes %" INT64_FMT "-%" INT64_FMT "/%" INT64_FMT "\r\n"
+             "Connection: keep-alive", ct.p, session->reader.pos, session->reader.len - session->reader.pos - 1, session->task->get_filesize(session->task));
+    
+    int resp_code = 206;
+    if (mg_strcmp(session->hm->method, mg_mk_str("HEAD")) == 0) {
+      resp_code = 200;
+    }
+    mg_send_head(session->connection, resp_code, session->reader.len , header_str);
+    session->reader.header_sending += session->connection->send_mbuf.len;
+  }
+
+  if (mg_strcmp(session->hm->method, mg_mk_str("HEAD")) == 0) {
+    session->connection->flags |= MG_F_SEND_AND_CLOSE;
+    return 0;
+  }
+  
   int64_t read_from = session->reader.pos + session->buf.len + session->connection->send_mbuf.len - session->reader.header_sending;
   size_t wanted = session->buf.size - session->buf.len;
   if (session->reader.len - session->reader.sending < wanted) {
@@ -78,22 +103,6 @@ static size_t try_transfer_data(struct ms_session *session) {
     return 0;
   }
   //    check_buf(session, buf, session->reader.pos, read);
-  if (!(session->connection->flags & MS_F_HEADER_SEND)) {
-    session->connection->flags |= MS_F_HEADER_SEND;
-    MS_DBG("session:%p, send head content-length: %" INT64_FMT, session, session->reader.len);
-    // TODO: 1. keep-alive 2. proxy headers like `content-type`, 3. reader.len == 0
-    
-    struct mg_str ct = session->task->content_type(session->task);
-    char header_str[MG_MAX_HTTP_SEND_MBUF] = {0};
-    snprintf(header_str, MG_MAX_HTTP_SEND_MBUF, "Content-Type: %s\r\n"
-             "Accept-Ranges: bytes\r\n"
-             "Content-Range: bytes %" INT64_FMT "-%" INT64_FMT "/%" INT64_FMT "\r\n"
-             "Connection: keep-alive", ct.p, session->reader.pos, session->reader.len - session->reader.pos - 1, session->task->get_filesize(session->task));
-
-    mg_send_head(session->connection, 206, session->reader.len , header_str);
-    
-    session->reader.header_sending += session->connection->send_mbuf.len;
-  }
   
   size_t len = session->buf.len;
   if (len + session->reader.header_sending > session->buf.size) { // make sure send_mbuf <= 2M
@@ -193,6 +202,7 @@ struct ms_session *ms_session_open(struct mg_connection *nc, struct http_message
   MS_DBG("session:%p, nc:%p", session, nc);
   QUEUE_INIT(&session->node);
   QUEUE_INIT(&session->reader.node);
+  session->hm = hm;
   session->connection = nc;
   session->task = task;
   mbuf_init(&session->buf, MS_SEND_BUF_LIMIT);
@@ -210,7 +220,7 @@ struct ms_session *ms_session_open(struct mg_connection *nc, struct http_message
       r2 = r2 - r1 + 1;
     }
     MS_ASSERT(r1 >= 0 && r2 >= 0);
-    MS_DBG("session:%p, Range (%" INT64_FMT ", %" INT64_FMT ")  %s", session, r1, r2, mg_strdup_nul(*range_hdr).p);
+    MS_DBG("session:%p, Range (%" INT64_FMT ", %" INT64_FMT ")  %.*s", session, r1, r2, (int)range_hdr->len, range_hdr->p);
   }
   session->reader.pos = r1;
   session->reader.len = r2;
