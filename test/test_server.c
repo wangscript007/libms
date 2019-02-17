@@ -221,6 +221,7 @@ static void test_invalid_handler(struct mg_connection *nc, int ev, void *ev_data
   if (ev == MG_EV_CLOSE) {
     struct ms_test_invalid_server_case *test_case = (struct ms_test_invalid_server_case *)nc->user_data;
     test_case->callback();
+    MS_FREE(test_case);
   }
 }
 

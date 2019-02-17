@@ -1,4 +1,8 @@
 language: c
+addons:
+  apt:
+    packages:
+      - gdb
 cache: 
   directories:
     - build
@@ -7,10 +11,13 @@ before_script:
   - python gyp_ms.py -f make
   - if [ ! -f build/wildo.mp4 ]; then wget https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_30mb.mp4 -O build/wildo.mp4; fi
 script: 
+  - ulimit -c unlimited -S
   - make && ./out/Debug/run_ms_tests `pwd`
 after_success:
   - pip install --user cpp-coveralls
   - coveralls --exclude src/mongoose.c --exclude test --exclude build --gcov-options '\-lp'
+after_failure:
+  - if [ ! -f core ]; then gdb $(pwd)/out/Debug/run_ms_tests core -ex "thread apply all bt" -ex "set pagination 0" -batch; fi;
 notifications:
   email: false
   slack:

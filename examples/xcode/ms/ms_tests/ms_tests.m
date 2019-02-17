@@ -26,8 +26,10 @@
 - (void)testExample {
   char *path = "/Users/wujianguo/Documents/wujianguo/githublibms/";
   chdir(path);
+  test_setup();
   run_sync_tests(path);
   run_async_tests(path);
+  test_tear_down();
 }
 
 - (void)testPerformanceExample {

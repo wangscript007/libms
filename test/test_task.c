@@ -68,9 +68,10 @@ void test_task_1() {
   struct ms_fake_reader *reader2 = add_reader(task, 0, filesize, filesize);
 
   task->task.remove_reader(&task->task, &reader1->reader);
-  
+  fake_reader_close(reader1);
   
   task->task.remove_reader(&task->task, &reader2->reader);
+  fake_reader_close(reader2);
   task->task.close(&task->task);
   
 //  MS_FREE(test_case);

@@ -36,6 +36,8 @@ struct ms_fake_server {
 
 void start_fake_server(void);
 
+void stop_fake_server(void);
+
 void fake_url(struct ms_fake_nc *nc, char *url, int url_len);
 
 struct ms_fake_nc *nc_of(enum ms_fake_type type);

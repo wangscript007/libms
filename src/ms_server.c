@@ -132,10 +132,11 @@ static struct ms_session *find_session(struct mg_connection *nc, struct ms_serve
 }
 
 static void remove_task_if_need(struct ms_server *server, double ts) {
-  QUEUE *q;
+  QUEUE *q = QUEUE_NEXT(&server->tasks);
   struct ms_task *task = NULL;
-  QUEUE_FOREACH(q, &server->tasks) {
+  while (q != &server->tasks) {
     task = QUEUE_DATA(q, struct ms_task, node);
+    q = QUEUE_NEXT(q);
     if (QUEUE_EMPTY(&task->readers)) {
       if (mg_time() - task->close_ts >= ts) {
         task->task.close(&task->task);
@@ -278,7 +279,7 @@ void ms_asnyc_start() {
 int ms_generate_url(struct ms_url_param *input, char *out_url, size_t out_len) {
   struct mg_str encode = mg_url_encode_opt(mg_mk_str(input->url), mg_mk_str("._-$,;~()"), 0);
   int ret = snprintf(out_url, out_len - 1, "http://127.0.0.1:%s/stream/%s?url=%s", ms_default_server()->port, input->path, encode.p);
-  free((void *) encode.p);
+  MS_FREE((void *) encode.p);
   return ret;
 }
 
