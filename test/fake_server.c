@@ -86,6 +86,19 @@ void start_fake_server(void) {
   add_nc(&s_server, path, "/fake/redirect4.mp4",  ms_fake_type_redirect_4);
 }
 
+void stop_fake_server(void) {
+  QUEUE *q;
+  struct ms_fake_nc *nct;
+  QUEUE_FOREACH(q, &s_server.nc) {
+    nct = QUEUE_DATA(q, struct ms_fake_nc, node);
+    QUEUE_REMOVE(q);
+    MS_FREE(nct);
+    stop_fake_server();
+    break;
+  }
+}
+
+
 void fake_url(struct ms_fake_nc *nc, char *url, int url_len) {
     snprintf(url, url_len, "http://127.0.0.1:%s%s", ms_default_server()->port, nc->uri);
 }

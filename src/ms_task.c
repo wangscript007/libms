@@ -324,6 +324,9 @@ static void task_close(struct ms_itask *task) {
   if (t->redirect_url.p) {
     MS_FREE((void *)t->redirect_url.p);
   }
+  if (t->content_type.p) {
+    MS_FREE((void *)t->content_type.p);
+  }
   QUEUE_REMOVE(&t->node);
   MS_FREE(t);
 }

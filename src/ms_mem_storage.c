@@ -34,9 +34,9 @@ static struct ms_mem_storage *cast_from(struct ms_istorage *st) {
   return (struct ms_mem_storage *)st;
 }
 
-static int bit_num(uint64_t filesize) {
-  return ceil(1.0 * ceil(1.0 * filesize / MS_PIECE_UNIT_SIZE) / 4);
-}
+//static int bit_num(uint64_t filesize) {
+//  return ceil(1.0 * ceil(1.0 * filesize / MS_PIECE_UNIT_SIZE) / 4);
+//}
 
 //static void print_bitfield(struct ms_istorage *st) {
 //  /*
@@ -306,6 +306,7 @@ static void storage_close(struct ms_istorage *st) {
         piece->buf = (char *)0;
       }
     }
+    MS_FREE(block);
   }
   MS_FREE(mem_st->blocks);
   MS_FREE(mem_st);

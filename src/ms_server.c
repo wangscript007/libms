@@ -278,7 +278,7 @@ void ms_asnyc_start() {
 int ms_generate_url(struct ms_url_param *input, char *out_url, size_t out_len) {
   struct mg_str encode = mg_url_encode_opt(mg_mk_str(input->url), mg_mk_str("._-$,;~()"), 0);
   int ret = snprintf(out_url, out_len - 1, "http://127.0.0.1:%s/stream/%s?url=%s", ms_default_server()->port, input->path, encode.p);
-  free((void *) encode.p);
+  MS_FREE((void *) encode.p);
   return ret;
 }
 

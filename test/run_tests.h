@@ -65,5 +65,9 @@ SYNC_TEST_CASE_MAP(GEN_SYNC_TEST_ENTRY)
 void run_sync_tests(const char *path);
 
 
+
+void test_setup(void);
+void test_tear_down(void);
+
 #endif /* run_tests_h */
 

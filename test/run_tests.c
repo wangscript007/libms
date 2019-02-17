@@ -28,6 +28,7 @@ TEST_CASE_MAP(GEN_TEST_DONE)
 
 static void timer_handler(struct mg_connection *nc, int ev, void *ev_data) {
   if (ev == MG_EV_TIMER) {
+    stop_fake_server();
     ms_stop();
   }
 }
@@ -86,3 +87,118 @@ static void run_sync_case(int index)
 void run_sync_tests(const char *path) {
   run_sync_case(0);
 }
+
+
+
+
+struct ms_test_memory_mem {
+  QUEUE   node;
+  void    *ptr;
+  size_t  size;
+  
+  char    *trace;
+};
+
+struct ms_test_memory_monitor {
+  QUEUE mem_list;
+};
+
+static struct ms_test_memory_monitor s_memory_monitor;
+
+#include <execinfo.h>
+#define BT_BUF_SIZE 100
+static char * backtrace_description(void) {
+  int j, nptrs;
+  void *buffer[BT_BUF_SIZE];
+  char **strings;
+  
+  nptrs = backtrace(buffer, BT_BUF_SIZE);
+
+  strings = backtrace_symbols(buffer, nptrs);
+  if (strings == NULL) {
+    perror("backtrace_symbols");
+    exit(EXIT_FAILURE);
+  }
+  
+  char *ret = malloc(1024);
+  memset(ret, 0, 1024);
+  for (j = 0; j < nptrs; j++) {
+    strcat(ret, strings[j]);
+    if (j > 8) {
+      break;
+    }
+  }
+  
+  free(strings);
+  return ret;
+}
+
+void *ms_malloc_test(size_t size) {
+  void *ptr = malloc(size);
+  struct ms_test_memory_mem *mem = (struct ms_test_memory_mem *)malloc(sizeof(struct ms_test_memory_mem));
+  memset(mem, 0, sizeof(struct ms_test_memory_mem));
+  mem->ptr = ptr;
+  mem->size = size;
+  mem->trace = backtrace_description();
+  QUEUE_INIT(&mem->node);
+  QUEUE_INSERT_TAIL(&s_memory_monitor.mem_list, &mem->node);
+//  after_tests();
+  return ptr;
+}
+
+void *ms_realloc_test(void *ptr, size_t size) {
+  void *ret = realloc(ptr, size);
+  QUEUE *q;
+  struct ms_test_memory_mem *mem;
+  QUEUE_FOREACH(q, &s_memory_monitor.mem_list) {
+    mem = QUEUE_DATA(q, struct ms_test_memory_mem, node);
+    if (mem->ptr == ptr) {
+      QUEUE_REMOVE(q);
+      free(mem);
+      break;
+    }
+  }
+  
+  mem = (struct ms_test_memory_mem *)malloc(sizeof(struct ms_test_memory_mem));
+  memset(mem, 0, sizeof(struct ms_test_memory_mem));
+  mem->ptr = ret;
+  mem->size = size;
+  mem->trace = backtrace_description();
+  QUEUE_INIT(&mem->node);
+//  QUEUE_INSERT_TAIL(&s_memory_monitor.mem_list, &mem->node);
+  QUEUE_INSERT_HEAD(&s_memory_monitor.mem_list, &mem->node);
+  
+  return ret;
+}
+
+void ms_free_test(void *ptr) {
+  QUEUE *q;
+  struct ms_test_memory_mem *mem;
+  QUEUE_FOREACH(q, &s_memory_monitor.mem_list) {
+    mem = QUEUE_DATA(q, struct ms_test_memory_mem, node);
+    if (mem->ptr == ptr) {
+      QUEUE_REMOVE(q);
+      free(mem->trace);
+      free(mem);
+      break;
+    }
+  }
+  free(ptr);
+}
+
+
+void test_setup(void) {
+  QUEUE_INIT(&s_memory_monitor.mem_list);
+}
+
+void test_tear_down(void) {
+  QUEUE *q;
+  struct ms_test_memory_mem *mem;
+  QUEUE_FOREACH(q, &s_memory_monitor.mem_list) {
+    mem = QUEUE_DATA(q, struct ms_test_memory_mem, node);
+    MS_DBG("%p, %zu", mem->ptr, mem->size);
+    MS_DBG("%s\n", mem->trace);
+  }
+  MS_ASSERT(QUEUE_EMPTY(&s_memory_monitor.mem_list));
+}
+
