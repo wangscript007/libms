@@ -132,10 +132,11 @@ static struct ms_session *find_session(struct mg_connection *nc, struct ms_serve
 }
 
 static void remove_task_if_need(struct ms_server *server, double ts) {
-  QUEUE *q;
+  QUEUE *q = QUEUE_NEXT(&server->tasks);
   struct ms_task *task = NULL;
-  QUEUE_FOREACH(q, &server->tasks) {
+  while (q != &server->tasks) {
     task = QUEUE_DATA(q, struct ms_task, node);
+    q = QUEUE_NEXT(q);
     if (QUEUE_EMPTY(&task->readers)) {
       if (mg_time() - task->close_ts >= ts) {
         task->task.close(&task->task);
