@@ -200,7 +200,7 @@ static void create_pipe_for(struct ms_task *task, struct ms_ireader *reader, int
 static void dispatch_reader(struct ms_task *task, struct ms_ireader *reader) {
   // create pipe if need
   
-  MS_DBG("task:%p, reader:%p, pos:%"INT64_FMT" len:%"INT64_FMT" sending:%zu", task, reader, reader->pos, reader->len, reader->sending);
+//  MS_DBG("task:%p, reader:%p, pos:%"INT64_FMT" len:%"INT64_FMT" sending:%zu", task, reader, reader->pos, reader->len, reader->sending);
   // TODO: req_len == 0
   int64_t pos = reader->pos + reader->sending;
   int64_t end = reader->pos + reader->sending + max_len_from(reader);
@@ -212,7 +212,7 @@ static void dispatch_reader(struct ms_task *task, struct ms_ireader *reader) {
   if (task->storage->get_estimate_size(task->storage) > 0) {
     task->storage->cached_from(task->storage, pos, &cached_next_pos, &cached_next_len);
     if (cached_next_pos == pos && cached_next_len >= max_len_from(reader)/2) {
-      MS_DBG("task:%p, reader:%p pos:%"INT64_FMT" len:%"INT64_FMT" return", task, reader, cached_next_pos, cached_next_len);
+//      MS_DBG("task:%p, reader:%p pos:%"INT64_FMT" len:%"INT64_FMT" return", task, reader, cached_next_pos, cached_next_len);
       return;
     }
     
@@ -222,19 +222,19 @@ static void dispatch_reader(struct ms_task *task, struct ms_ireader *reader) {
 
   }
   if (pos > 0 && pos == end) {
-    MS_DBG("task:%p, reader:%p completed", task, reader);
+//    MS_DBG("task:%p, reader:%p completed", task, reader);
     return;
   }
 //  pos = reader->req_pos - reader->req_pos % MS_PIECE_UNIT_SIZE;
   pos = pos - pos % MS_PIECE_UNIT_SIZE;
   struct ms_ipipe *near_pipe = nearest_pipe(task, pos, 1);
   if (near_pipe && near_pipe->get_current_pos(near_pipe) == pos) {
-    MS_DBG("task:%p, reader:%p find near return", task, reader);
+//    MS_DBG("task:%p, reader:%p find near return", task, reader);
     return;
   }
   
   if (pos >= end && end != 0) {
-    MS_DBG("task:%p, reader:%p, pos:%"INT64_FMT" >= end:%"INT64_FMT" return", task, reader, pos, end);
+//    MS_DBG("task:%p, reader:%p, pos:%"INT64_FMT" >= end:%"INT64_FMT" return", task, reader, pos, end);
     return;
   }
   

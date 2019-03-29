@@ -347,7 +347,7 @@ static size_t storage_write(struct ms_istorage *st, const char *buf, int64_t pos
     }
   }
 //  MS_DBG("%lld, %zu, write: %zu", pos, len, write);
-  print_bitfield(st);
+//  print_bitfield(st);
   mem_st->completed_size += write;
   return write;
 }
