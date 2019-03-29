@@ -17,7 +17,7 @@ static void dispatch_reader(struct ms_task *task, struct ms_ireader *reader);
 static void dispatch_pipe(struct ms_task *task, struct ms_ipipe *pipe);
 
 static int64_t max_len_from(struct ms_ireader *reader) {
-  return 30*1024*1024;
+  return 32*1024*1024;
 }
 
 static struct ms_task *cast_from(void *data) {
@@ -128,12 +128,23 @@ static void on_redirect(struct ms_ipipe *pipe, struct mg_str location) {
 }
 
 static void on_pipe_complete(struct ms_ipipe *pipe) {
+  MS_DBG("pipe:%p", pipe);
+  struct ms_task *task = cast_from(pipe->user_data);
+
   QUEUE_REMOVE(&pipe->node);
   pipe->close(pipe);
+  
+  QUEUE *q;
+  struct ms_ireader *reader = NULL;
+  QUEUE_FOREACH(q, &task->readers) {
+    reader = QUEUE_DATA(q, struct ms_ireader, node);
+    dispatch_reader(task, reader);
+  }
 }
 
 static void on_close(struct ms_ipipe *pipe, int code) {
   struct ms_task *task = cast_from(pipe->user_data);
+  MS_DBG("task:%p pipe:%p code:%d", task, pipe, code);
   if (code != 0) {
     task->code = code;
   }
@@ -153,6 +164,7 @@ static void on_close(struct ms_ipipe *pipe, int code) {
 
 static void create_pipe_for(struct ms_task *task, struct ms_ireader *reader, int64_t pos, int64_t len) {
   if (task->code != 0) {
+    MS_DBG("task:%p, reader:%p task->code:%d, return", task, reader, task->code);
     return;
   }
   struct ms_ipipe_callback callback = {
@@ -188,39 +200,49 @@ static void create_pipe_for(struct ms_task *task, struct ms_ireader *reader, int
 static void dispatch_reader(struct ms_task *task, struct ms_ireader *reader) {
   // create pipe if need
   
+  MS_DBG("task:%p, reader:%p, pos:%"INT64_FMT" len:%"INT64_FMT" sending:%zu", task, reader, reader->pos, reader->len, reader->sending);
   // TODO: req_len == 0
-  int64_t len = reader->req_len;
-  if (reader->req_len > 0) {
-    len = reader->req_len + reader->req_pos % MS_PIECE_UNIT_SIZE;
+  int64_t pos = reader->pos + reader->sending;
+  int64_t end = reader->pos + reader->sending + max_len_from(reader);
+  if (end > task->storage->get_estimate_size(task->storage)) {
+    end = task->storage->get_estimate_size(task->storage);
   }
-  
-  int64_t pos = reader->req_pos - reader->req_pos % MS_PIECE_UNIT_SIZE;
+  int64_t cached_next_pos = 0;
+  int64_t cached_next_len = 0;
   if (task->storage->get_estimate_size(task->storage) > 0) {
-    task->storage->cached_from(task->storage, reader->pos + reader->sending, &pos, &len);
-    if (len == 0) {
+    task->storage->cached_from(task->storage, pos, &cached_next_pos, &cached_next_len);
+    if (cached_next_pos == pos && cached_next_len >= max_len_from(reader)/2) {
+      MS_DBG("task:%p, reader:%p pos:%"INT64_FMT" len:%"INT64_FMT" return", task, reader, cached_next_pos, cached_next_len);
       return;
     }
+    
+    if (cached_next_pos == pos && cached_next_len > 0) {
+      pos += cached_next_len;
+    }
+
   }
-  
+  if (pos > 0 && pos == end) {
+    MS_DBG("task:%p, reader:%p completed", task, reader);
+    return;
+  }
+//  pos = reader->req_pos - reader->req_pos % MS_PIECE_UNIT_SIZE;
+  pos = pos - pos % MS_PIECE_UNIT_SIZE;
   struct ms_ipipe *near_pipe = nearest_pipe(task, pos, 1);
   if (near_pipe && near_pipe->get_current_pos(near_pipe) == pos) {
+    MS_DBG("task:%p, reader:%p find near return", task, reader);
     return;
   }
   
-  /*
-  if (pos >= reader->pos + max_len_from(reader)) {
+  if (pos >= end && end != 0) {
+    MS_DBG("task:%p, reader:%p, pos:%"INT64_FMT" >= end:%"INT64_FMT" return", task, reader, pos, end);
     return;
   }
-
-  if (task->storage->get_filesize(task->storage) > 0) {
-    if (pos + len >= reader->pos + max_len_from(reader) || len == 0) {
-      len = reader->pos + max_len_from(reader) - pos;
-      if (pos + len > task->storage->get_filesize(task->storage)) {
-        len = 0;
-      }
-    }
+  
+  int64_t len = 0;
+  if (end > 0) {
+    len = end - pos;
   }
-  */
+  MS_DBG("task:%p, reader:%p pos:%"INT64_FMT" len:%"INT64_FMT, task, reader, pos, len);
   create_pipe_for(task, reader, pos, len);
 }
 
@@ -233,6 +255,7 @@ static void dispatch_pipe(struct ms_task *task, struct ms_ipipe *pipe) {
     temp = QUEUE_DATA(q, struct ms_ipipe, node);
     if (temp != pipe && temp->get_current_pos(temp) == pipe->get_current_pos(pipe)) {
       QUEUE_REMOVE(&pipe->node);
+      MS_DBG("task:%p, pipe:%p", task, pipe);
       pipe->close(pipe);
 //      ms_http_pipe_close(pipe);
       return;
@@ -243,6 +266,7 @@ static void dispatch_pipe(struct ms_task *task, struct ms_ipipe *pipe) {
   
   if (!reader) {
     QUEUE_REMOVE(&pipe->node);
+    MS_DBG("task:%p, pipe:%p", task, pipe);
     pipe->close(pipe);
 //    ms_http_pipe_close(pipe);
     return;
@@ -250,6 +274,7 @@ static void dispatch_pipe(struct ms_task *task, struct ms_ipipe *pipe) {
   
   if (reader->pos + reader->sending + max_len_from(reader) <= pipe->get_current_pos(pipe)) {
     QUEUE_REMOVE(&pipe->node);
+    MS_DBG("task:%p, pipe:%p", task, pipe);
     pipe->close(pipe);
 //    ms_http_pipe_close(pipe);
   }
@@ -258,6 +283,7 @@ static void dispatch_pipe(struct ms_task *task, struct ms_ipipe *pipe) {
     struct ms_ipipe *near_pipe = nearest_pipe(task, pipe->get_current_pos(pipe) - 1, -1);
     if (near_pipe && reader->pos + reader->sending <= near_pipe->get_current_pos(near_pipe)) {
       QUEUE_REMOVE(&pipe->node);
+      MS_DBG("task:%p, pipe:%p", task, pipe);
       pipe->close(pipe);
 //      ms_http_pipe_close(pipe);
     }
@@ -274,6 +300,15 @@ static void add_reader(struct ms_itask *task, struct ms_ireader *reader) {
 static size_t task_read(struct ms_itask *task, char *buf, int64_t pos, size_t len) {
   // TODO: should dispatch_pipe or not?
   struct ms_task *t = (struct ms_task *)task;
+  
+  QUEUE *q;
+  struct ms_ireader *reader = NULL;
+  QUEUE_FOREACH(q, &t->readers) {
+    reader = QUEUE_DATA(q, struct ms_ireader, node);
+    dispatch_reader(t, reader);
+  }
+
+//  dispatch_reader(t, reader);
   return t->storage->read(t->storage, buf, pos, len);
 }
 
@@ -285,6 +320,11 @@ static int64_t get_task_filesize(struct ms_itask *task) {
 static int64_t get_task_estimate_size(struct ms_itask *task) {
   struct ms_task *t = (struct ms_task *)task;
   return t->storage->get_estimate_size(t->storage);
+}
+
+static int64_t get_completed_length(struct ms_itask *task) {
+  struct ms_task *t = (struct ms_task *)task;
+  return t->storage->get_completed_size(t->storage);
 }
 
 static struct mg_str get_content_type(struct ms_itask *task) {
@@ -315,6 +355,7 @@ static void task_close(struct ms_itask *task) {
     q = QUEUE_HEAD(&t->pipes);
     pipe = QUEUE_DATA(q, struct ms_ipipe, node);
     QUEUE_REMOVE(&pipe->node);
+    MS_DBG("task:%p, pipe:%p", task, pipe);
     pipe->close(pipe);
 //    ms_http_pipe_close(pipe);
   }
@@ -335,6 +376,11 @@ static int get_errno(struct ms_itask *task) {
   return ((struct ms_task *)task)->code;
 }
 
+static char *get_bitmap(struct ms_itask *task) {
+  struct ms_task *t = (struct ms_task *)task;
+  return t->storage->get_bitmap(t->storage);
+}
+
 struct ms_task *ms_task_open(const struct mg_str url, struct ms_factory factory) {
   struct ms_task *task = MS_MALLOC(sizeof(struct ms_task));
   memset(task, 0, sizeof(struct ms_task));
@@ -353,8 +399,13 @@ struct ms_task *ms_task_open(const struct mg_str url, struct ms_factory factory)
   task->task.content_type = get_content_type;
   task->task.get_filesize = get_task_filesize;
   task->task.get_estimate_size = get_task_estimate_size;
+  task->task.get_completed_size = get_completed_length;
   task->task.remove_reader = remove_reader;
   task->task.close = task_close;
   task->task.get_errno = get_errno;
+  task->task.get_bitmap = get_bitmap;
+  
+//  task->created_at = time(NULL);
+  time(&task->created_at);
   return task;
 }

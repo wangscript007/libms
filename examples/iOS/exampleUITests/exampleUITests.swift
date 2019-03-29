@@ -1,14 +1,14 @@
 //
-//  LibmsExampleUITests.swift
-//  LibmsExampleUITests
+//  exampleUITests.swift
+//  exampleUITests
 //
-//  Created by Jianguo Wu on 2019/2/11.
-//  Copyright © 2019 libms. All rights reserved.
+//  Created by Jianguo Wu on 2019/3/29.
+//  Copyright © 2019 wujianguo. All rights reserved.
 //
 
 import XCTest
 
-class LibmsExampleUITests: XCTestCase {
+class exampleUITests: XCTestCase {
 
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.

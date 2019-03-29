@@ -16,10 +16,12 @@ struct ms_istorage {
   void    (*set_filesize)(struct ms_istorage *st, int64_t filesize);
   int64_t (*get_estimate_size)(struct ms_istorage *st);
   void    (*set_content_size)(struct ms_istorage *st, int64_t from, int64_t size);
+  int64_t (*get_completed_size)(struct ms_istorage *st);
   void    (*cached_from)(struct ms_istorage *st, int64_t from, int64_t *pos, int64_t *len);
   size_t  (*write)(struct ms_istorage *st, const char *buf, int64_t pos, size_t len);
   size_t  (*read)(struct ms_istorage *st, char *buf, int64_t pos, size_t len);
   void    (*close)(struct ms_istorage *st);
+  char *  (*get_bitmap)(struct ms_istorage *st);
 };
 
 struct ms_ireader {
@@ -48,9 +50,11 @@ struct ms_itask {
   size_t (*read)(struct ms_itask *task, char *buf, int64_t pos, size_t len);
   int64_t (*get_filesize)(struct ms_itask *task);
   int64_t (*get_estimate_size)(struct ms_itask *task);
+  int64_t (*get_completed_size)(struct ms_itask *task);
   void (*remove_reader)(struct ms_itask *task, struct ms_ireader *reader);
   void (*close)(struct ms_itask *task);
   int (*get_errno)(struct ms_itask *task);
+  char * (*get_bitmap)(struct ms_itask *task);
 };
 
 struct ms_ipipe;
@@ -70,6 +74,7 @@ struct ms_ipipe {
 
   int64_t (*get_req_len)(struct ms_ipipe *pipe);
   int64_t (*get_current_pos)(struct ms_ipipe *pipe);
+  int64_t (*get_current_len)(struct ms_ipipe *pipe);
   void    (*connect)(struct ms_ipipe *pipe);
   void    (*close)(struct ms_ipipe *pipe);
   

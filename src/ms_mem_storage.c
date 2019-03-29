@@ -34,63 +34,164 @@ static struct ms_mem_storage *cast_from(struct ms_istorage *st) {
   return (struct ms_mem_storage *)st;
 }
 
-//static int bit_num(uint64_t filesize) {
-//  return ceil(1.0 * ceil(1.0 * filesize / MS_PIECE_UNIT_SIZE) / 4);
-//}
+static int bit_num(uint64_t filesize) {
+  return ceil(1.0 * ceil(1.0 * filesize / MS_PIECE_UNIT_SIZE) / 4);
+}
 
-//static void print_bitfield(struct ms_istorage *st) {
-//  /*
-//   *
-//   *
-//   *
-//   */
-//  MS_ASSERT(MS_PIECE_NUM_OF_PER_BLOCK % 4 == 0);
-//  struct ms_mem_storage *mem_st = cast_from(st);
-//
-//  int bitnum = bit_num(st->get_filesize(st));
-//  char *bitmap = (char *)MS_MALLOC(bitnum + 1);
-//  memset(bitmap, 0, bitnum + 1);
-//  int index_for_bitmap = 0;
-//
-//  int num = block_num(mem_st->estimate_size);
-//  int index_for_block = 0;
-//  for (; index_for_block < num; ++index_for_block) {
-//    struct ms_block *block = mem_st->blocks[index_for_block];
-//    if (!block) {
-//      int inner_index = 0;
-//      for (; inner_index < MS_PIECE_NUM_OF_PER_BLOCK / 4; ++inner_index) {
-//        bitmap[index_for_bitmap++] = '0';
-//        if (index_for_bitmap >= bitnum) {
-//          break;
-//        }
-//      }
-//      continue;
-//    }
-//
-//    int index_for_piece = 0;
-//    int piece_bit = 0;
-//    int index_for_byte = 0;
-//    for (; index_for_piece < MS_PIECE_NUM_OF_PER_BLOCK; ++index_for_piece) {
-//      struct ms_piece *piece = &block->pieces[index_for_piece];
-//      if (piece->buf) {
-//        piece_bit |= 1 << index_for_byte;
-//      }
-//      index_for_byte++;
-//      index_for_byte %= 4;
-//      if (index_for_byte == 0) {
-//        static char hex_map[16] = "0123456789ABCDEF";
-//        bitmap[index_for_bitmap++] = hex_map[piece_bit];
-//        piece_bit = 0;
-//        if (index_for_bitmap >= bitnum) {
-//          break;
-//        }
-//      }
-//    }
+static void print_bitfield(struct ms_istorage *st) {
+  /*
+   *
+   *
+   *
+   */
+  MS_ASSERT(MS_PIECE_NUM_OF_PER_BLOCK % 4 == 0);
+  struct ms_mem_storage *mem_st = cast_from(st);
+
+  int bitnum = bit_num(st->get_filesize(st));
+  int merge_time = 1;
+//  while (bitnum > 128 && merge_time < MS_PIECE_NUM_OF_PER_BLOCK / (4 * 4 * 2)) {
+//    bitnum /= 2;
+//    merge_time *= 2;
 //  }
+  
+  char *bitmap = (char *)MS_MALLOC(bitnum + 1);
+  memset(bitmap, 0, bitnum + 1);
+  int index_for_bitmap = 0;
+
+  int num = block_num(mem_st->estimate_size);
+  int index_for_block = 0;
+  for (; index_for_block < num; ++index_for_block) {
+    struct ms_block *block = mem_st->blocks[index_for_block];
+    if (!block) {
+      int inner_index = 0;
+      for (; inner_index < MS_PIECE_NUM_OF_PER_BLOCK / (4 * merge_time); ++inner_index) {
+        bitmap[index_for_bitmap++] = '0';
+        if (index_for_bitmap >= bitnum) {
+          break;
+        }
+      }
+      continue;
+    }
+
+    int index_for_piece = 0;
+    int piece_bit = 0;
+    int index_for_byte = 0;
+    for (; index_for_piece < MS_PIECE_NUM_OF_PER_BLOCK;) {
+      
+      int merge_index = 0;
+      while (merge_index < merge_time) {
+        struct ms_piece *piece = &block->pieces[index_for_piece];
+        if (!piece->buf) {
+          break;
+        }
+        index_for_piece++;
+        merge_index++;
+      }
+      if (merge_index == merge_time) {
+        piece_bit |= 1 << (4 - index_for_byte - 1);
+      }
+      
+      while (merge_index < merge_time) {
+        index_for_piece++;
+        merge_index++;
+      }
+      
+      index_for_byte++;
+      index_for_byte %= 4;
+      if (index_for_byte == 0) {
+        static char hex_map[16] = "0123456789ABCDEF";
+        bitmap[index_for_bitmap++] = hex_map[piece_bit];
+        piece_bit = 0;
+        if (index_for_bitmap >= bitnum) {
+          break;
+        }
+      }
+    }
+  }
+  MS_DBG("mem_st:%p %s", mem_st, bitmap);
+  MS_FREE(bitmap);
+}
+
+static char *get_bitmap(struct ms_istorage *st) {
+  struct ms_mem_storage *mem_st = cast_from(st);
+  if (st->get_filesize(st) == 0) {
+    return mem_st->bitmap;
+  }
+
+  int bitnum = bit_num(st->get_filesize(st));
+  int merge_time = 1;
+  while (bitnum > 128 && merge_time < MS_PIECE_NUM_OF_PER_BLOCK / (4 * 4 * 2)) {
+    bitnum /= 2;
+    merge_time *= 2;
+  }
+
+  if (!mem_st->bitmap) {
+    mem_st->bitmap = (char *)MS_MALLOC(bitnum + 1);
+    memset(mem_st->bitmap, 0, bitnum + 1);
+  }
+  MS_ASSERT(MS_PIECE_NUM_OF_PER_BLOCK % 4 == 0);
+  
+//  int bitnum = bit_num(st->get_filesize(st));
+  char *bitmap = mem_st->bitmap;
+  memset(bitmap, 0, bitnum + 1);
+  int index_for_bitmap = 0;
+  
+  int num = block_num(mem_st->estimate_size);
+  int index_for_block = 0;
+  for (; index_for_block < num; ++index_for_block) {
+    struct ms_block *block = mem_st->blocks[index_for_block];
+    if (!block) {
+      int inner_index = 0;
+      for (; inner_index < MS_PIECE_NUM_OF_PER_BLOCK / (4 * merge_time); ++inner_index) {
+        bitmap[index_for_bitmap++] = '0';
+        if (index_for_bitmap >= bitnum) {
+          break;
+        }
+      }
+      continue;
+    }
+    
+    int index_for_piece = 0;
+    int piece_bit = 0;
+    int index_for_byte = 0;
+    for (; index_for_piece < MS_PIECE_NUM_OF_PER_BLOCK;) {
+      
+      int merge_index = 0;
+      while (merge_index < merge_time) {
+        struct ms_piece *piece = &block->pieces[index_for_piece];
+        if (!piece->buf) {
+          break;
+        }
+        index_for_piece++;
+        merge_index++;
+      }
+      if (merge_index == merge_time) {
+        piece_bit |= 1 << (4 - index_for_byte - 1);
+      }
+      
+      while (merge_index < merge_time) {
+        index_for_piece++;
+        merge_index++;
+      }
+      
+      index_for_byte++;
+      index_for_byte %= 4;
+      if (index_for_byte == 0) {
+        static char hex_map[16] = "0123456789ABCDEF";
+        bitmap[index_for_bitmap++] = hex_map[piece_bit];
+        piece_bit = 0;
+        if (index_for_bitmap >= bitnum) {
+          break;
+        }
+      }
+    }
+  }
 //  MS_DBG("mem_st:%p %s", mem_st, bitmap);
 //  MS_FREE(bitmap);
-//}
-//
+
+  return mem_st->bitmap;
+}
+
 //static void update_bitmap(char *bitmap, int block_index, int piece_index) {
 //  int bit_piece_index = block_index * MS_PIECE_NUM_OF_PER_BLOCK / 4 + piece_index;
 //
@@ -138,8 +239,12 @@ static void set_content_size(struct ms_istorage *st, int64_t from, int64_t size)
   }
 }
 
+static int64_t get_completed_size(struct ms_istorage *st) {
+  struct ms_mem_storage *mem_st = cast_from(st);
+  return mem_st->completed_size;
+}
 
-static void wanted_pos_from(struct ms_istorage *st, int64_t from, int64_t *pos, int64_t *len) {
+static void cached_from(struct ms_istorage *st, int64_t from, int64_t *pos, int64_t *len) {
   *pos = 0;
   *len = 0;
   struct ms_mem_storage *mem_st = cast_from(st);
@@ -206,6 +311,9 @@ static size_t storage_write(struct ms_istorage *st, const char *buf, int64_t pos
   struct ms_mem_storage *mem_st = cast_from(st);
   MS_ASSERT(pos % MS_PIECE_UNIT_SIZE == 0);
   MS_ASSERT(pos + len == mem_st->estimate_size || len % MS_PIECE_UNIT_SIZE == 0);
+  if (pos + len == mem_st->estimate_size) {
+    MS_DBG("complete");
+  }
   size_t write = 0;
   int index_for_block = block_index(pos);
   while (write < len) {
@@ -239,7 +347,8 @@ static size_t storage_write(struct ms_istorage *st, const char *buf, int64_t pos
     }
   }
 //  MS_DBG("%lld, %zu, write: %zu", pos, len, write);
-//  print_bitfield(st);
+  print_bitfield(st);
+  mem_st->completed_size += write;
   return write;
 }
 
@@ -321,10 +430,12 @@ struct ms_mem_storage *ms_mem_storage_open() {
   mem_st->st.set_filesize = set_filesize;
   mem_st->st.get_estimate_size = get_estimate_size;
   mem_st->st.set_content_size = set_content_size;
-  mem_st->st.cached_from = wanted_pos_from;
+  mem_st->st.get_completed_size = get_completed_size;
+  mem_st->st.cached_from = cached_from;
   mem_st->st.write = storage_write;
   mem_st->st.read = storage_read;
   mem_st->st.close = storage_close;
+  mem_st->st.get_bitmap = get_bitmap;
   
   MS_DBG("mem_st:%p", mem_st);
   return mem_st;

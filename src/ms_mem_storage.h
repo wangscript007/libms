@@ -30,8 +30,10 @@ struct ms_mem_storage {
   struct ms_istorage st;
   int64_t filesize;
   int64_t estimate_size;
+  int64_t completed_size;
   
   struct ms_block  **blocks;
+  char *bitmap;
 };
 
 struct ms_mem_storage *ms_mem_storage_open(void);

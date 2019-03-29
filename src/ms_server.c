@@ -13,6 +13,7 @@
 #include "ms_http_pipe.h"
 #include "ms_task.h"
 #include <pthread.h>
+#include <time.h>
 
 #define MS_STRINGIFY(v) MS_STRINGIFY_HELPER(v)
 #define MS_STRINGIFY_HELPER(v) #v
@@ -80,6 +81,8 @@ char *ms_str_of_ev(int ev) {
     return "MG_EV_HTTP_REPLY";
   } else if (ev == MG_EV_HTTP_CHUNK) {
     return "MG_EV_HTTP_CHUNK";
+  } else if (ev == MG_EV_WEBSOCKET_CONTROL_FRAME) {
+    return "MG_EV_WEBSOCKET_CONTROL_FRAME";
   } else {
     return "unknown";
   }
@@ -98,7 +101,9 @@ static void init_media_server(struct ms_server *server) {
   QUEUE_INIT(&server->sessions);
   QUEUE_INIT(&server->tasks);
   mg_mgr_init(&server->mgr, NULL);
-  
+  server->opts.document_root = ".";
+  server->opts.enable_directory_listing = "yes";
+
 #ifdef __APPLE__
   signal(SIGPIPE, SIG_IGN);
 #endif
@@ -107,6 +112,11 @@ static void init_media_server(struct ms_server *server) {
 static void uninit_media_server(struct ms_server *server) {
   // TODO:
 }
+
+static int is_websocket(const struct mg_connection *nc) {
+  return nc->flags & MG_F_IS_WEBSOCKET;
+}
+
 
 static struct ms_ipipe *open_pipe(const struct mg_str url,
                            int64_t pos,
@@ -164,6 +174,167 @@ static struct ms_task *find_or_create_task(const char *url, struct ms_server *se
   return task;
 }
 
+static int has_prefix(const struct mg_str *uri, const struct mg_str *prefix) {
+  return uri->len > prefix->len && memcmp(uri->p, prefix->p, prefix->len) == 0;
+}
+
+static int is_equal(const struct mg_str *s1, const struct mg_str *s2) {
+  return s1->len == s2->len && memcmp(s1->p, s2->p, s2->len) == 0;
+}
+
+
+static void fill_pipe_json(char *json, int len, struct ms_ipipe *pipe) {
+  snprintf(json + strlen(json), len - strlen(json), "{");
+  snprintf(json + strlen(json), len - strlen(json), "\"id\": \"%p\",", pipe);
+  snprintf(json + strlen(json), len - strlen(json), "\"pos\": %"INT64_FMT",", pipe->get_current_pos(pipe));
+  snprintf(json + strlen(json), len - strlen(json), "\"len\": %"INT64_FMT, pipe->get_current_len(pipe));
+  snprintf(json + strlen(json), len - strlen(json), "}");
+}
+
+static void fill_reader_json(char *json, int len, struct ms_ireader *reader) {
+  snprintf(json + strlen(json), len - strlen(json), "{");
+  snprintf(json + strlen(json), len - strlen(json), "\"id\": \"%p\",", reader);
+  snprintf(json + strlen(json), len - strlen(json), "\"pos\": %"INT64_FMT",", reader->pos);
+  snprintf(json + strlen(json), len - strlen(json), "\"len\": %"INT64_FMT, reader->len);
+  snprintf(json + strlen(json), len - strlen(json), "}");
+}
+
+static void fill_task_json(char *json, int len, struct ms_task *task) {
+//  struct tm *timeinfo = localtime(&task->created_at);
+  int64_t filesize = task->task.get_filesize(&task->task);
+  int64_t completed = task->task.get_completed_size(&task->task);
+  snprintf(json + strlen(json), len - strlen(json), "{");
+  snprintf(json + strlen(json), len - strlen(json), "\"id\": \"%p\",", task);
+  snprintf(json + strlen(json), len - strlen(json), "\"url\": \"%s\",", task->url.p);
+  snprintf(json + strlen(json), len - strlen(json), "\"totalLength\": %"INT64_FMT",", filesize);
+  snprintf(json + strlen(json), len - strlen(json), "\"completedLength\": %"INT64_FMT",", completed);
+  snprintf(json + strlen(json), len - strlen(json), "\"speed\": 0,");
+  snprintf(json + strlen(json), len - strlen(json), "\"bitmap\": \"%s\",", task->task.get_bitmap(&task->task));
+
+  snprintf(json + strlen(json), len - strlen(json), "\"readers\":[");
+  QUEUE *qr;
+  struct ms_ireader *reader = NULL;
+  QUEUE_FOREACH(qr, &task->readers) {
+    if (reader != NULL) {
+      snprintf(json + strlen(json), len - strlen(json), ",");
+    }
+    reader = QUEUE_DATA(qr, struct ms_ireader, node);
+    fill_reader_json(json + strlen(json), len - (int)strlen(json), reader);
+  }
+  snprintf(json + strlen(json), len - strlen(json), "],");
+  
+  
+  snprintf(json + strlen(json), len - strlen(json), "\"pipes\":[");
+  QUEUE *qp;
+  struct ms_ipipe *pipe = NULL;
+  QUEUE_FOREACH(qp, &task->pipes) {
+    if (pipe != NULL) {
+      snprintf(json + strlen(json), len - strlen(json), ",");
+    }
+    pipe = QUEUE_DATA(qp, struct ms_ipipe, node);
+    fill_pipe_json(json + strlen(json), len - (int)strlen(json), pipe);
+  }
+  snprintf(json + strlen(json), len - strlen(json), "]");
+
+  snprintf(json + strlen(json), len - strlen(json), "}");
+}
+
+static void get_task_list_handler(struct mg_connection *nc, int ev, void *p) {
+  if (ev != MG_EV_HTTP_REQUEST) {
+    return;
+  }
+  
+  struct http_message *hm = (struct http_message *)p;
+  MS_ASSERT(mg_strcmp(hm->method, mg_mk_str("GET")) == 0);
+  char url[MG_MAX_HTTP_REQUEST_SIZE] = {0};
+  int url_len = 0;
+  url_len = mg_get_http_var(&hm->query_string, "url", url, MG_MAX_HTTP_REQUEST_SIZE);
+  struct mg_str url_str = MG_MK_STR(url);
+  
+  int capacity_len = 1024*1024;
+  char *response = MS_MALLOC(capacity_len);
+  memset(response, 0, capacity_len);
+  int resp_len = (int)strlen(response);
+
+  snprintf(response + resp_len, capacity_len - resp_len, "[");
+  QUEUE *q;
+  struct ms_task *task = NULL;
+  int task_num = 0;
+  QUEUE_FOREACH(q, &ms_default_server()->tasks) {
+    task = QUEUE_DATA(q, struct ms_task, node);
+    
+    if (url_len <= 0 || is_equal(&url_str, &task->url)) {
+      if (task_num > 0) {
+        resp_len = (int)strlen(response);
+        snprintf(response + resp_len, capacity_len - resp_len, ",");
+      }
+      resp_len = (int)strlen(response);
+      fill_task_json(response + resp_len, capacity_len - resp_len, task);
+      // TODO: more tasks MS_REALLOC
+      
+      task_num += 1;
+    }
+
+  }
+
+  resp_len = (int)strlen(response);
+  snprintf(response + resp_len, capacity_len - resp_len, "]");
+
+  resp_len = (int)strlen(response);
+
+  mg_send_head(nc, 200, resp_len, "Content-Type: application/json\r\nConnection: keep-alive");
+  mg_send(nc, response, resp_len);
+  
+  MS_FREE(response);
+}
+
+static void get_task_handler(struct mg_connection *nc, int ev, void *p) {
+  if (ev != MG_EV_HTTP_REQUEST) {
+    return;
+  }
+  
+  struct http_message *hm = (struct http_message *)p;
+  MS_ASSERT(mg_strcmp(hm->method, mg_mk_str("GET")) == 0);
+
+  QUEUE *q;
+  struct ms_task *task = NULL;
+  QUEUE_FOREACH(q, &ms_default_server()->tasks) {
+    task = QUEUE_DATA(q, struct ms_task, node);
+    char uri[32] = {0};
+    snprintf(uri, 32, "/api/tasks/%p", task);
+    if (mg_vcmp(&hm->uri, uri) == 0) {
+      char json[1024*1024] = {0};
+      fill_task_json(json, 1024*1024, task);
+      int resp_len = (int)strlen(json);
+      mg_send_head(nc, 200, resp_len, "Content-Type: application/json\r\nConnection: keep-alive");
+      mg_send(nc, json, resp_len);
+      return;
+    }
+  }
+
+  mg_http_send_error(nc, 404, "not found");
+}
+
+struct ms_monitor_client {
+  QUEUE   node;
+  struct mg_connection *nc;
+};
+
+static void api_handler(struct mg_connection *nc, int ev, void *p) {
+  struct ms_server *server = nc->user_data;
+  if (ev == MG_EV_HTTP_REQUEST) {
+    static const struct mg_str api_tasks = MG_MK_STR("/api/tasks");
+    struct http_message *hm = (struct http_message *)p;
+    if (is_equal(&api_tasks, &hm->uri)) {
+      return get_task_list_handler(nc, ev, p);
+    } else if (has_prefix(&api_tasks, &hm->uri)) {
+      return get_task_handler(nc, ev, p);
+    } else {
+      mg_serve_http(nc, hm, server->opts);
+    }
+  }
+}
+
 static void stream_handler(struct mg_connection *nc, int ev, void *p) {
   if (ev != MG_EV_POLL && ev != MG_EV_SEND) {
     MS_DBG("handler:%p, %s", nc, ms_str_of_ev(ev));
@@ -188,14 +359,22 @@ static void stream_handler(struct mg_connection *nc, int ev, void *p) {
 }
 
 static void server_handler(struct mg_connection *nc, int ev, void *p) {
-  if (ev != MG_EV_POLL && ev != MG_EV_SEND) {
+  if (ev != MG_EV_POLL && ev != MG_EV_SEND && ev != MG_EV_RECV && ev != MG_EV_WEBSOCKET_CONTROL_FRAME) {
     MS_DBG("handler:%p, %s", nc, ms_str_of_ev(ev));
   }
   
   struct ms_server *server = nc->user_data;
   
   if (ev == MG_EV_HTTP_REQUEST) {
-    mg_http_send_error(nc, 404, NULL);
+    static const struct mg_str stream_prefix = MG_MK_STR("/stream/");
+    static const struct mg_str api_prefix = MG_MK_STR("/api/");
+    struct http_message *hm = (struct http_message *)p;
+    if (has_prefix(&stream_prefix, &hm->uri)) {
+      return stream_handler(nc, ev, p);
+    } else if (has_prefix(&api_prefix, &hm->uri)) {
+      return api_handler(nc, ev, p);
+    }
+    mg_serve_http(nc, hm, server->opts);
   } else if (ev == MG_EV_SEND) {
     struct ms_session *session = find_session(nc, server);
     int *num_sent_bytes = (int *)p;
@@ -209,7 +388,19 @@ static void server_handler(struct mg_connection *nc, int ev, void *p) {
         session->reader.on_send((struct ms_ireader *)session, *num_sent_bytes);
       }
     }
+  } else if (ev == MG_EV_WEBSOCKET_HANDSHAKE_REQUEST) {
+    MS_DBG("websocket handshake request");
+  } else if (ev == MG_EV_WEBSOCKET_HANDSHAKE_DONE) {
+    MS_DBG("websocket handshake done");
+  } else if (ev == MG_EV_WEBSOCKET_FRAME) {
+    struct websocket_message *wm = (struct websocket_message *)p;
+    struct mg_str d = {(char *) wm->data, wm->size};
+    MS_DBG("websocket frame %.*s", (int)d.len, d.p);
+    mg_send_websocket_frame(nc, WEBSOCKET_OP_TEXT, "", 0);
   } else if (ev == MG_EV_CLOSE) {
+    if (is_websocket(nc)) {
+      MS_DBG("websocket close.");
+    }
     struct ms_session *session = find_session(nc, server);
     if (session) {
 //      ms_task_remove_reader(session->task, (struct ms_ireader *)session);
@@ -241,7 +432,9 @@ void ms_start(const char *http_port, const char *path, void (*callback)(void)) {
   s_server.nc = nc;
   
   mg_register_http_endpoint(nc, "/stream/?*", stream_handler);
-  
+  mg_register_http_endpoint(nc, "/api/tasks", get_task_list_handler);
+  mg_register_http_endpoint(nc, "/api/tasks/*", get_task_handler);
+
   if (callback) {
     callback();
   }
@@ -276,7 +469,7 @@ void ms_asnyc_start() {
   pthread_attr_destroy(&attr);
 }
 
-int ms_generate_url(struct ms_url_param *input, char *out_url, size_t out_len) {
+int ms_generate_url(const struct ms_url_param *input, char *out_url, size_t out_len) {
   struct mg_str encode = mg_url_encode_opt(mg_mk_str(input->url), mg_mk_str("._-$,;~()"), 0);
   int ret = snprintf(out_url, out_len - 1, "http://127.0.0.1:%s/stream/%s?url=%s", ms_default_server()->port, input->path, encode.p);
   MS_FREE((void *) encode.p);

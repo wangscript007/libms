@@ -1,9 +1,9 @@
 //
 //  AppDelegate.swift
-//  LibmsExample
+//  example
 //
-//  Created by Jianguo Wu on 2019/2/11.
-//  Copyright © 2019 libms. All rights reserved.
+//  Created by Jianguo Wu on 2019/3/29.
+//  Copyright © 2019 wujianguo. All rights reserved.
 //
 
 import UIKit
@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        ms_asnyc_start()
         return true
     }
 

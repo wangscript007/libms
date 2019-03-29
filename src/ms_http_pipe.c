@@ -214,6 +214,12 @@ static void pipe_handler(struct mg_connection *nc, int ev, void *ev_data) {
       nc->flags |= MG_F_CLOSE_IMMEDIATELY;
       MS_DBG("pipe:%p redirect to %.*s", http_pipe, (int)v->len, v->p);
     } else if (hm->resp_code == 200 || hm->resp_code == 206) {
+      int64_t filesize = http_pipe->pipe.callback.get_filesize(&http_pipe->pipe);
+      if (filesize > 0 && http_pipe->pos + http_pipe->buf.len == filesize && http_pipe->buf.len > 0) {
+        http_pipe->pos += http_pipe->buf.len;
+        http_pipe->pipe.callback.on_recv(&http_pipe->pipe, http_pipe->buf.buf, http_pipe->pos - http_pipe->buf.len, http_pipe->buf.len);
+        mbuf_remove(&http_pipe->buf, http_pipe->buf.len);
+      }
       http_pipe->pipe.callback.on_complete(&http_pipe->pipe);
     } else {
       http_pipe->pipe.callback.on_close(&http_pipe->pipe, hm->resp_code);
@@ -236,7 +242,7 @@ static void pipe_connect(struct ms_ipipe *pipe) {
   } else {
     snprintf(extra_headers, 128, "Range: bytes=%" INT64_FMT "-\r\n", http_pipe->pos);
   }
-  MS_DBG("pipe:%p connect %s", http_pipe, extra_headers);
+  MS_DBG("pipe:%p connect %s %s", http_pipe, http_pipe->url.p, extra_headers);
   struct mg_connection *nc = mg_connect_http(&ms_default_server()->mgr, pipe_handler, http_pipe->url.p, extra_headers, NULL);
   nc->user_data = http_pipe;
   http_pipe->nc = nc;
@@ -250,6 +256,11 @@ static int64_t get_req_len(struct ms_ipipe *pipe) {
 static int64_t get_current_pos(struct ms_ipipe *pipe) {
   struct ms_http_pipe *http_pipe = (struct ms_http_pipe *)pipe;
   return http_pipe->pos;
+}
+
+static int64_t get_current_len(struct ms_ipipe *pipe) {
+  struct ms_http_pipe *http_pipe = (struct ms_http_pipe *)pipe;
+  return http_pipe->len;
 }
 
 static void pipe_close(struct ms_ipipe *pipe) {
@@ -279,6 +290,7 @@ struct ms_http_pipe *ms_http_pipe_create(const struct mg_str url,
   
   http_pipe->pipe.get_req_len = get_req_len;
   http_pipe->pipe.get_current_pos = get_current_pos;
+  http_pipe->pipe.get_current_len = get_current_len;
   http_pipe->pipe.connect = pipe_connect;
   http_pipe->pipe.close = pipe_close;
   http_pipe->pipe.callback = callback;

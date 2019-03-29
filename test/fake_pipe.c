@@ -18,6 +18,11 @@ static int64_t get_current_pos(struct ms_ipipe *pipe) {
   return fake_pipe->pos;
 }
 
+static int64_t get_current_len(struct ms_ipipe *pipe) {
+  struct ms_fake_pipe *fake_pipe = (struct ms_fake_pipe *)pipe;
+  return fake_pipe->len;
+}
+
 static void pipe_connect(struct ms_ipipe *pipe) {
   struct ms_fake_pipe *fake_pipe = (struct ms_fake_pipe *)pipe;
   if (fake_pipe->on_connect) {
@@ -47,6 +52,7 @@ struct ms_fake_pipe *fake_pipe_open(const struct mg_str url,
   
   fake_pipe->pipe.get_req_len = get_req_len;
   fake_pipe->pipe.get_current_pos = get_current_pos;
+  fake_pipe->pipe.get_current_len = get_current_len;
   fake_pipe->pipe.connect = pipe_connect;
   fake_pipe->pipe.close = pipe_close;
   fake_pipe->pipe.callback = callback;
@@ -68,7 +74,7 @@ void fake_pipe_error(struct ms_fake_pipe *pipe) {
 }
 
 void fake_pipe_recv(struct ms_fake_pipe *pipe, size_t len) {
-  MS_ASSERT(pipe->len >= len);
+  MS_ASSERT(pipe->len == 0 || pipe->len >= len);
   MS_ASSERT(len <= 1024*1024);
   char buf[1024*1024] = {0};
   read_fake(pipe->file, buf, len, pipe->pos);

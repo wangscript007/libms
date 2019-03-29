@@ -10,6 +10,7 @@
 #define ms_task_h
 
 #include "ms_server.h"
+#include <time.h>
 
 struct ms_task {
   struct ms_itask task;
@@ -23,10 +24,13 @@ struct ms_task {
   
   QUEUE   readers;
   QUEUE   pipes;
+  QUEUE   clients;
   
   void    *user_data;
   double  close_ts;
   
+  time_t  created_at;
+
   // if one pipe error, then this task error.
   int     code;
 };

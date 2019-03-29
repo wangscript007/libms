@@ -1,0 +1,369 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		815CC04B224DF912009EE3AC /* mongoose.h in Headers */ = {isa = PBXBuildFile; fileRef = 815CC048224DF912009EE3AC /* mongoose.h */; };
+		815CC04C224DF912009EE3AC /* ms.h in Headers */ = {isa = PBXBuildFile; fileRef = 815CC049224DF912009EE3AC /* ms.h */; };
+		815CC04D224DF912009EE3AC /* queue.h in Headers */ = {isa = PBXBuildFile; fileRef = 815CC04A224DF912009EE3AC /* queue.h */; };
+		815CC05E224DF91E009EE3AC /* ms_http_pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 815CC04F224DF91D009EE3AC /* ms_http_pipe.h */; };
+		815CC05F224DF91E009EE3AC /* ms_memory_pool.h in Headers */ = {isa = PBXBuildFile; fileRef = 815CC050224DF91D009EE3AC /* ms_memory_pool.h */; };
+		815CC060224DF91E009EE3AC /* ms_session.h in Headers */ = {isa = PBXBuildFile; fileRef = 815CC051224DF91D009EE3AC /* ms_session.h */; };
+		815CC061224DF91E009EE3AC /* ms_task.h in Headers */ = {isa = PBXBuildFile; fileRef = 815CC052224DF91D009EE3AC /* ms_task.h */; };
+		815CC062224DF91E009EE3AC /* ms_file_storage.h in Headers */ = {isa = PBXBuildFile; fileRef = 815CC053224DF91D009EE3AC /* ms_file_storage.h */; };
+		815CC063224DF91E009EE3AC /* ms_server.c in Sources */ = {isa = PBXBuildFile; fileRef = 815CC054224DF91D009EE3AC /* ms_server.c */; };
+		815CC064224DF91E009EE3AC /* ms_mem_storage.h in Headers */ = {isa = PBXBuildFile; fileRef = 815CC055224DF91D009EE3AC /* ms_mem_storage.h */; };
+		815CC065224DF91E009EE3AC /* ms_memory_pool.c in Sources */ = {isa = PBXBuildFile; fileRef = 815CC056224DF91D009EE3AC /* ms_memory_pool.c */; };
+		815CC066224DF91E009EE3AC /* ms_http_pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 815CC057224DF91D009EE3AC /* ms_http_pipe.c */; };
+		815CC067224DF91E009EE3AC /* ms_session.c in Sources */ = {isa = PBXBuildFile; fileRef = 815CC058224DF91D009EE3AC /* ms_session.c */; };
+		815CC068224DF91E009EE3AC /* mongoose.c in Sources */ = {isa = PBXBuildFile; fileRef = 815CC059224DF91D009EE3AC /* mongoose.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		815CC069224DF91E009EE3AC /* ms_task.c in Sources */ = {isa = PBXBuildFile; fileRef = 815CC05A224DF91D009EE3AC /* ms_task.c */; };
+		815CC06A224DF91E009EE3AC /* ms_server.h in Headers */ = {isa = PBXBuildFile; fileRef = 815CC05B224DF91D009EE3AC /* ms_server.h */; };
+		815CC06B224DF91E009EE3AC /* ms_mem_storage.c in Sources */ = {isa = PBXBuildFile; fileRef = 815CC05C224DF91D009EE3AC /* ms_mem_storage.c */; };
+		815CC06C224DF91E009EE3AC /* ms_file_storage.c in Sources */ = {isa = PBXBuildFile; fileRef = 815CC05D224DF91D009EE3AC /* ms_file_storage.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		815CC03F224DF8A7009EE3AC /* libms.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libms.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		815CC048224DF912009EE3AC /* mongoose.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mongoose.h; sourceTree = "<group>"; };
+		815CC049224DF912009EE3AC /* ms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms.h; sourceTree = "<group>"; };
+		815CC04A224DF912009EE3AC /* queue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = queue.h; sourceTree = "<group>"; };
+		815CC04F224DF91D009EE3AC /* ms_http_pipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_http_pipe.h; sourceTree = "<group>"; };
+		815CC050224DF91D009EE3AC /* ms_memory_pool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_memory_pool.h; sourceTree = "<group>"; };
+		815CC051224DF91D009EE3AC /* ms_session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_session.h; sourceTree = "<group>"; };
+		815CC052224DF91D009EE3AC /* ms_task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_task.h; sourceTree = "<group>"; };
+		815CC053224DF91D009EE3AC /* ms_file_storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_file_storage.h; sourceTree = "<group>"; };
+		815CC054224DF91D009EE3AC /* ms_server.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_server.c; sourceTree = "<group>"; };
+		815CC055224DF91D009EE3AC /* ms_mem_storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_mem_storage.h; sourceTree = "<group>"; };
+		815CC056224DF91D009EE3AC /* ms_memory_pool.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_memory_pool.c; sourceTree = "<group>"; };
+		815CC057224DF91D009EE3AC /* ms_http_pipe.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_http_pipe.c; sourceTree = "<group>"; };
+		815CC058224DF91D009EE3AC /* ms_session.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_session.c; sourceTree = "<group>"; };
+		815CC059224DF91D009EE3AC /* mongoose.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mongoose.c; sourceTree = "<group>"; };
+		815CC05A224DF91D009EE3AC /* ms_task.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_task.c; sourceTree = "<group>"; };
+		815CC05B224DF91D009EE3AC /* ms_server.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_server.h; sourceTree = "<group>"; };
+		815CC05C224DF91D009EE3AC /* ms_mem_storage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_mem_storage.c; sourceTree = "<group>"; };
+		815CC05D224DF91D009EE3AC /* ms_file_storage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_file_storage.c; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		815CC03D224DF8A7009EE3AC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		815CC036224DF8A7009EE3AC = {
+			isa = PBXGroup;
+			children = (
+				815CC046224DF8FD009EE3AC /* Source */,
+				815CC040224DF8A7009EE3AC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		815CC040224DF8A7009EE3AC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				815CC03F224DF8A7009EE3AC /* libms.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		815CC046224DF8FD009EE3AC /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				815CC04E224DF91D009EE3AC /* src */,
+				815CC047224DF912009EE3AC /* include */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		815CC047224DF912009EE3AC /* include */ = {
+			isa = PBXGroup;
+			children = (
+				815CC048224DF912009EE3AC /* mongoose.h */,
+				815CC049224DF912009EE3AC /* ms.h */,
+				815CC04A224DF912009EE3AC /* queue.h */,
+			);
+			name = include;
+			path = ../../include;
+			sourceTree = "<group>";
+		};
+		815CC04E224DF91D009EE3AC /* src */ = {
+			isa = PBXGroup;
+			children = (
+				815CC059224DF91D009EE3AC /* mongoose.c */,
+				815CC05D224DF91D009EE3AC /* ms_file_storage.c */,
+				815CC053224DF91D009EE3AC /* ms_file_storage.h */,
+				815CC057224DF91D009EE3AC /* ms_http_pipe.c */,
+				815CC04F224DF91D009EE3AC /* ms_http_pipe.h */,
+				815CC05C224DF91D009EE3AC /* ms_mem_storage.c */,
+				815CC055224DF91D009EE3AC /* ms_mem_storage.h */,
+				815CC056224DF91D009EE3AC /* ms_memory_pool.c */,
+				815CC050224DF91D009EE3AC /* ms_memory_pool.h */,
+				815CC054224DF91D009EE3AC /* ms_server.c */,
+				815CC05B224DF91D009EE3AC /* ms_server.h */,
+				815CC058224DF91D009EE3AC /* ms_session.c */,
+				815CC051224DF91D009EE3AC /* ms_session.h */,
+				815CC05A224DF91D009EE3AC /* ms_task.c */,
+				815CC052224DF91D009EE3AC /* ms_task.h */,
+			);
+			name = src;
+			path = ../../src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		815CC03B224DF8A7009EE3AC /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				815CC05F224DF91E009EE3AC /* ms_memory_pool.h in Headers */,
+				815CC05E224DF91E009EE3AC /* ms_http_pipe.h in Headers */,
+				815CC062224DF91E009EE3AC /* ms_file_storage.h in Headers */,
+				815CC04D224DF912009EE3AC /* queue.h in Headers */,
+				815CC060224DF91E009EE3AC /* ms_session.h in Headers */,
+				815CC061224DF91E009EE3AC /* ms_task.h in Headers */,
+				815CC04C224DF912009EE3AC /* ms.h in Headers */,
+				815CC06A224DF91E009EE3AC /* ms_server.h in Headers */,
+				815CC064224DF91E009EE3AC /* ms_mem_storage.h in Headers */,
+				815CC04B224DF912009EE3AC /* mongoose.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		815CC03E224DF8A7009EE3AC /* ms */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 815CC043224DF8A7009EE3AC /* Build configuration list for PBXNativeTarget "ms" */;
+			buildPhases = (
+				815CC03B224DF8A7009EE3AC /* Headers */,
+				815CC03C224DF8A7009EE3AC /* Sources */,
+				815CC03D224DF8A7009EE3AC /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ms;
+			productName = ms;
+			productReference = 815CC03F224DF8A7009EE3AC /* libms.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		815CC037224DF8A7009EE3AC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1020;
+				ORGANIZATIONNAME = wujianguo;
+				TargetAttributes = {
+					815CC03E224DF8A7009EE3AC = {
+						CreatedOnToolsVersion = 10.2;
+					};
+				};
+			};
+			buildConfigurationList = 815CC03A224DF8A7009EE3AC /* Build configuration list for PBXProject "ms" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 815CC036224DF8A7009EE3AC;
+			productRefGroup = 815CC040224DF8A7009EE3AC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				815CC03E224DF8A7009EE3AC /* ms */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		815CC03C224DF8A7009EE3AC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				815CC067224DF91E009EE3AC /* ms_session.c in Sources */,
+				815CC066224DF91E009EE3AC /* ms_http_pipe.c in Sources */,
+				815CC069224DF91E009EE3AC /* ms_task.c in Sources */,
+				815CC068224DF91E009EE3AC /* mongoose.c in Sources */,
+				815CC06B224DF91E009EE3AC /* ms_mem_storage.c in Sources */,
+				815CC06C224DF91E009EE3AC /* ms_file_storage.c in Sources */,
+				815CC065224DF91E009EE3AC /* ms_memory_pool.c in Sources */,
+				815CC063224DF91E009EE3AC /* ms_server.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		815CC041224DF8A7009EE3AC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		815CC042224DF8A7009EE3AC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		815CC044224DF8A7009EE3AC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		815CC045224DF8A7009EE3AC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		815CC03A224DF8A7009EE3AC /* Build configuration list for PBXProject "ms" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				815CC041224DF8A7009EE3AC /* Debug */,
+				815CC042224DF8A7009EE3AC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		815CC043224DF8A7009EE3AC /* Build configuration list for PBXNativeTarget "ms" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				815CC044224DF8A7009EE3AC /* Debug */,
+				815CC045224DF8A7009EE3AC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 815CC037224DF8A7009EE3AC /* Project object */;
+}

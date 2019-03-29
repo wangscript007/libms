@@ -56,6 +56,8 @@ const char* ms_version_string(void);
 struct ms_server {
   struct mg_mgr mgr;
   struct mg_connection *nc;
+  struct mg_serve_http_opts opts;
+  
   char    port[16];
   char    path[MG_MAX_PATH];
   
@@ -75,12 +77,12 @@ void ms_asnyc_start(void);
 
 
 struct ms_url_param {
-  char    *url;
-  char    *path;
+  const char    *url;
+  const char    *path;
 };
 
 
-int ms_generate_url(struct ms_url_param *input, char *out_url, size_t out_len);
+int ms_generate_url(const struct ms_url_param *input, char *out_url, size_t out_len);
 
 
 
