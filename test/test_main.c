@@ -13,7 +13,7 @@
 int main(int argc, const char * argv[]) {
   assert(argc == 2);
   chdir(argv[1]);  
-//  run_sync_tests(argv[1]);
+  run_sync_tests(argv[1]);
   run_async_tests(argv[1]);
   return 0;
 }

@@ -244,6 +244,10 @@ static int64_t get_completed_size(struct ms_istorage *st) {
   return mem_st->completed_size;
 }
 
+static int64_t max_cache_len(struct ms_istorage *st) {
+  return 30*1024*1024;
+}
+
 static void cached_from(struct ms_istorage *st, int64_t from, int64_t *pos, int64_t *len) {
   *pos = 0;
   *len = 0;
@@ -436,6 +440,7 @@ struct ms_mem_storage *ms_mem_storage_open() {
   mem_st->st.read = storage_read;
   mem_st->st.close = storage_close;
   mem_st->st.get_bitmap = get_bitmap;
+  mem_st->st.max_cache_len = max_cache_len;
   
   MS_DBG("mem_st:%p", mem_st);
   return mem_st;

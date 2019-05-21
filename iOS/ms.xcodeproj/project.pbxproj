@@ -29,24 +29,24 @@
 
 /* Begin PBXFileReference section */
 		815CC03F224DF8A7009EE3AC /* libms.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libms.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		815CC048224DF912009EE3AC /* mongoose.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mongoose.h; sourceTree = "<group>"; };
-		815CC049224DF912009EE3AC /* ms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms.h; sourceTree = "<group>"; };
-		815CC04A224DF912009EE3AC /* queue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = queue.h; sourceTree = "<group>"; };
-		815CC04F224DF91D009EE3AC /* ms_http_pipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_http_pipe.h; sourceTree = "<group>"; };
-		815CC050224DF91D009EE3AC /* ms_memory_pool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_memory_pool.h; sourceTree = "<group>"; };
-		815CC051224DF91D009EE3AC /* ms_session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_session.h; sourceTree = "<group>"; };
-		815CC052224DF91D009EE3AC /* ms_task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_task.h; sourceTree = "<group>"; };
-		815CC053224DF91D009EE3AC /* ms_file_storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_file_storage.h; sourceTree = "<group>"; };
-		815CC054224DF91D009EE3AC /* ms_server.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_server.c; sourceTree = "<group>"; };
-		815CC055224DF91D009EE3AC /* ms_mem_storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_mem_storage.h; sourceTree = "<group>"; };
-		815CC056224DF91D009EE3AC /* ms_memory_pool.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_memory_pool.c; sourceTree = "<group>"; };
-		815CC057224DF91D009EE3AC /* ms_http_pipe.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_http_pipe.c; sourceTree = "<group>"; };
-		815CC058224DF91D009EE3AC /* ms_session.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_session.c; sourceTree = "<group>"; };
-		815CC059224DF91D009EE3AC /* mongoose.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mongoose.c; sourceTree = "<group>"; };
-		815CC05A224DF91D009EE3AC /* ms_task.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_task.c; sourceTree = "<group>"; };
-		815CC05B224DF91D009EE3AC /* ms_server.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_server.h; sourceTree = "<group>"; };
-		815CC05C224DF91D009EE3AC /* ms_mem_storage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_mem_storage.c; sourceTree = "<group>"; };
-		815CC05D224DF91D009EE3AC /* ms_file_storage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_file_storage.c; sourceTree = "<group>"; };
+		815CC048224DF912009EE3AC /* mongoose.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = mongoose.h; sourceTree = "<group>"; tabWidth = 2; };
+		815CC049224DF912009EE3AC /* ms.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = ms.h; sourceTree = "<group>"; tabWidth = 2; };
+		815CC04A224DF912009EE3AC /* queue.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = queue.h; sourceTree = "<group>"; tabWidth = 2; };
+		815CC04F224DF91D009EE3AC /* ms_http_pipe.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = ms_http_pipe.h; sourceTree = "<group>"; tabWidth = 2; };
+		815CC050224DF91D009EE3AC /* ms_memory_pool.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = ms_memory_pool.h; sourceTree = "<group>"; tabWidth = 2; };
+		815CC051224DF91D009EE3AC /* ms_session.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = ms_session.h; sourceTree = "<group>"; tabWidth = 2; };
+		815CC052224DF91D009EE3AC /* ms_task.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = ms_task.h; sourceTree = "<group>"; tabWidth = 2; };
+		815CC053224DF91D009EE3AC /* ms_file_storage.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = ms_file_storage.h; sourceTree = "<group>"; tabWidth = 2; };
+		815CC054224DF91D009EE3AC /* ms_server.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_server.c; sourceTree = "<group>"; tabWidth = 2; };
+		815CC055224DF91D009EE3AC /* ms_mem_storage.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = ms_mem_storage.h; sourceTree = "<group>"; tabWidth = 2; };
+		815CC056224DF91D009EE3AC /* ms_memory_pool.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_memory_pool.c; sourceTree = "<group>"; tabWidth = 2; };
+		815CC057224DF91D009EE3AC /* ms_http_pipe.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_http_pipe.c; sourceTree = "<group>"; tabWidth = 2; };
+		815CC058224DF91D009EE3AC /* ms_session.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_session.c; sourceTree = "<group>"; tabWidth = 2; };
+		815CC059224DF91D009EE3AC /* mongoose.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = mongoose.c; sourceTree = "<group>"; tabWidth = 2; };
+		815CC05A224DF91D009EE3AC /* ms_task.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_task.c; sourceTree = "<group>"; tabWidth = 2; };
+		815CC05B224DF91D009EE3AC /* ms_server.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = ms_server.h; sourceTree = "<group>"; tabWidth = 2; };
+		815CC05C224DF91D009EE3AC /* ms_mem_storage.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_mem_storage.c; sourceTree = "<group>"; tabWidth = 2; };
+		815CC05D224DF91D009EE3AC /* ms_file_storage.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_file_storage.c; sourceTree = "<group>"; tabWidth = 2; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,8 +79,8 @@
 		815CC046224DF8FD009EE3AC /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				815CC04E224DF91D009EE3AC /* src */,
 				815CC047224DF912009EE3AC /* include */,
+				815CC04E224DF91D009EE3AC /* src */,
 			);
 			path = Source;
 			sourceTree = "<group>";

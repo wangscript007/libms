@@ -14,14 +14,39 @@
 
 
 static void dispatch_reader(struct ms_task *task, struct ms_ireader *reader);
-static void dispatch_pipe(struct ms_task *task, struct ms_ipipe *pipe);
+static int dispatch_pipe(struct ms_task *task, struct ms_ipipe *pipe);
 
-static int64_t max_len_from(struct ms_ireader *reader) {
-  return 32*1024*1024;
-}
+//static int64_t max_len_from(struct ms_ireader *reader) {
+//  return 32*1024*1024;
+//}
 
 static struct ms_task *cast_from(void *data) {
   return (struct ms_task *)data;
+}
+
+static void print_readers(struct ms_task *task) {
+  QUEUE *q;
+  struct ms_ireader *reader = NULL;
+  QUEUE_FOREACH(q, &task->readers) {
+    reader = QUEUE_DATA(q, struct ms_ireader, node);
+    MS_DBG("reader %p, %"INT64_FMT, reader, reader->pos);
+  }
+}
+
+static void print_pipes(struct ms_task *task) {
+  QUEUE *q;
+  struct ms_ipipe *pipe = NULL;
+  QUEUE_FOREACH(q, &task->pipes) {
+    pipe = QUEUE_DATA(q, struct ms_ipipe, node);
+    MS_DBG("pipe %p, %"INT64_FMT, pipe, pipe->get_current_pos(pipe));
+  }
+}
+
+static void print_status(struct ms_task *task) {
+  MS_DBG("======= task %p =======", task);
+  print_pipes(task);
+  print_readers(task);  
+  MS_DBG("======= task %p =======", task);
 }
 
 static struct ms_ipipe *nearest_pipe(struct ms_task *task, int64_t pos, int direction) {
@@ -47,11 +72,12 @@ static struct ms_ireader *nearest_reader(struct ms_task *task, int64_t pos, int 
   struct ms_ireader *reader = NULL, *curr_reader = NULL;
   QUEUE_FOREACH(q, &task->readers) {
     reader = QUEUE_DATA(q, struct ms_ireader, node);
-    if (direction * (reader->pos + reader->sending - pos) >= 0) {
+    if (direction * (reader->pos + (int64_t)reader->sending - pos) >= 0) {
+//      MS_DBG("%d, %"INT64_FMT",%zu,%"INT64_FMT, direction, reader->pos, reader->sending, pos);
       if (curr_reader == NULL) {
         curr_reader = reader;
       } else {
-        if (direction * (reader->pos + reader->sending - (curr_reader->pos + curr_reader->sending)) < 0) {
+        if (direction * (reader->pos + (int64_t)reader->sending - (curr_reader->pos + (int64_t)curr_reader->sending)) < 0) {
           curr_reader = reader;
         }
       }
@@ -72,6 +98,19 @@ static void on_header(struct ms_ipipe *pipe, struct http_message *hm) {
   MS_ASSERT(type);
   // TODO: if type == nil
   task->content_type = mg_strdup_nul(*type);
+  
+  struct mg_str *etag = mg_get_http_header(hm, "ETag");
+  if (etag) {
+    task->etag = mg_strdup_nul(*etag);
+  }
+  struct mg_str *date = mg_get_http_header(hm, "Date");
+  if (date) {
+    task->date = mg_strdup_nul(*date);
+  }
+  struct mg_str *last_modified = mg_get_http_header(hm, "Last-Modified");
+  if (last_modified) {
+    task->date = mg_strdup_nul(*last_modified);
+  }
 }
 
 static void on_filesize(struct ms_ipipe *pipe, int64_t filesize) {
@@ -203,7 +242,9 @@ static void dispatch_reader(struct ms_task *task, struct ms_ireader *reader) {
 //  MS_DBG("task:%p, reader:%p, pos:%"INT64_FMT" len:%"INT64_FMT" sending:%zu", task, reader, reader->pos, reader->len, reader->sending);
   // TODO: req_len == 0
   int64_t pos = reader->pos + reader->sending;
-  int64_t end = reader->pos + reader->sending + max_len_from(reader);
+//  int64_t end = reader->pos + reader->sending + max_len_from(reader);
+  int64_t end = reader->pos + reader->sending + task->storage->max_cache_len(task->storage);
+  
   if (end > task->storage->get_estimate_size(task->storage)) {
     end = task->storage->get_estimate_size(task->storage);
   }
@@ -211,7 +252,9 @@ static void dispatch_reader(struct ms_task *task, struct ms_ireader *reader) {
   int64_t cached_next_len = 0;
   if (task->storage->get_estimate_size(task->storage) > 0) {
     task->storage->cached_from(task->storage, pos, &cached_next_pos, &cached_next_len);
-    if (cached_next_pos == pos && cached_next_len >= max_len_from(reader)/2) {
+    
+    if (cached_next_pos == pos && cached_next_len >= task->storage->max_cache_len(task->storage)/2) {
+//    if (cached_next_pos == pos && cached_next_len >= max_len_from(reader)/2) {
 //      MS_DBG("task:%p, reader:%p pos:%"INT64_FMT" len:%"INT64_FMT" return", task, reader, cached_next_pos, cached_next_len);
       return;
     }
@@ -246,7 +289,7 @@ static void dispatch_reader(struct ms_task *task, struct ms_ireader *reader) {
   create_pipe_for(task, reader, pos, len);
 }
 
-static void dispatch_pipe(struct ms_task *task, struct ms_ipipe *pipe) {
+static int dispatch_pipe(struct ms_task *task, struct ms_ipipe *pipe) {
   // remove pipe if need
   
   QUEUE *q;
@@ -258,7 +301,7 @@ static void dispatch_pipe(struct ms_task *task, struct ms_ipipe *pipe) {
       MS_DBG("task:%p, pipe:%p", task, pipe);
       pipe->close(pipe);
 //      ms_http_pipe_close(pipe);
-      return;
+      return 1;
     }
   }
 
@@ -269,13 +312,15 @@ static void dispatch_pipe(struct ms_task *task, struct ms_ipipe *pipe) {
     MS_DBG("task:%p, pipe:%p", task, pipe);
     pipe->close(pipe);
 //    ms_http_pipe_close(pipe);
-    return;
+    return 1;
   }
   
-  if (reader->pos + reader->sending + max_len_from(reader) <= pipe->get_current_pos(pipe)) {
+  if (reader->pos + reader->sending + task->storage->max_cache_len(task->storage) <= pipe->get_current_pos(pipe)) {
+//  if (reader->pos + reader->sending + max_len_from(reader) <= pipe->get_current_pos(pipe)) {
     QUEUE_REMOVE(&pipe->node);
     MS_DBG("task:%p, pipe:%p", task, pipe);
     pipe->close(pipe);
+    return 1;
 //    ms_http_pipe_close(pipe);
   }
 
@@ -285,10 +330,11 @@ static void dispatch_pipe(struct ms_task *task, struct ms_ipipe *pipe) {
       QUEUE_REMOVE(&pipe->node);
       MS_DBG("task:%p, pipe:%p", task, pipe);
       pipe->close(pipe);
+      return 1;
 //      ms_http_pipe_close(pipe);
     }
   }
-
+  return 0;
 }
 
 static void add_reader(struct ms_itask *task, struct ms_ireader *reader) {
@@ -342,6 +388,28 @@ static void remove_reader(struct ms_itask *task, struct ms_ireader *reader) {
 //    task->close(task, 5);
     t->close_ts = mg_time();
   }
+//#define QUEUE_FOREACH(q, h)                                                   \
+//for ((q) = QUEUE_NEXT(h); (q) != (h); (q) = QUEUE_NEXT(q))
+
+  
+  print_status(t);
+  struct ms_ipipe *pipe;
+  QUEUE *q;
+  q = QUEUE_NEXT(&t->pipes);
+  while (q != &t->pipes) {
+    pipe = QUEUE_DATA(q, struct ms_ipipe, node);
+    q = QUEUE_NEXT(q);
+    dispatch_pipe(t, pipe);
+  }
+  print_status(t);
+
+//  QUEUE *q;
+//  struct ms_ipipe *pipe;
+//  while (!QUEUE_EMPTY(&t->pipes)) {
+//    q = QUEUE_HEAD(&t->pipes);
+//    pipe = QUEUE_DATA(q, struct ms_ipipe, node);
+//    dispatch_pipe(t, pipe);
+//  }
 }
 
 static void task_close(struct ms_itask *task) {

@@ -19,6 +19,7 @@ struct ms_session {
   enum ms_http_method     method;
   struct ms_itask         *task;
   struct mbuf             buf;
+//  int                     waiting;
   
   QUEUE                   node;
   

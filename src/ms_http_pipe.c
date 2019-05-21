@@ -93,13 +93,22 @@ static void pipe_handler(struct mg_connection *nc, int ev, void *ev_data) {
     }
     if (!(nc->flags & MS_F_ON_CONTENT_CALLED)) {
       http_pipe->pipe.callback.on_header(&http_pipe->pipe, hm);
+      int i = 0;
+      MS_DBG("pipe:%p, ----header start----", http_pipe);
+      for (i = 0; i < MG_MAX_HTTP_HEADERS && hm->header_names[i].len > 0; i++) {
+        struct mg_str hn = hm->header_names[i];
+        struct mg_str hv = hm->header_values[i];
+        printf("%.*s: %.*s\n", (int)hn.len, hn.p, (int)hv.len, hv.p);
+      }
+      MS_DBG("pipe:%p, ----header end----", http_pipe);
+      nc->flags |= MS_F_ON_CONTENT_CALLED;
+
       if (http_pipe->pipe.callback.get_filesize(&http_pipe->pipe) == 0 || http_pipe->len == 0) {
         struct mg_str *range_hdr = mg_get_http_header(hm, "Content-Range");
         int64_t r1 = 0, r2 = 0, filesize = 0;
         // TODO: range_hdr == NULL
         http_parse_content_range(range_hdr, &r1, &r2, &filesize);
 
-        nc->flags |= MS_F_ON_CONTENT_CALLED;
         if (filesize > 0) {
           http_pipe->pipe.callback.on_filesize(&http_pipe->pipe, filesize);
         }
@@ -214,12 +223,6 @@ static void pipe_handler(struct mg_connection *nc, int ev, void *ev_data) {
       nc->flags |= MG_F_CLOSE_IMMEDIATELY;
       MS_DBG("pipe:%p redirect to %.*s", http_pipe, (int)v->len, v->p);
     } else if (hm->resp_code == 200 || hm->resp_code == 206) {
-      int64_t filesize = http_pipe->pipe.callback.get_filesize(&http_pipe->pipe);
-      if (filesize > 0 && http_pipe->pos + http_pipe->buf.len == filesize && http_pipe->buf.len > 0) {
-        http_pipe->pos += http_pipe->buf.len;
-        http_pipe->pipe.callback.on_recv(&http_pipe->pipe, http_pipe->buf.buf, http_pipe->pos - http_pipe->buf.len, http_pipe->buf.len);
-        mbuf_remove(&http_pipe->buf, http_pipe->buf.len);
-      }
       http_pipe->pipe.callback.on_complete(&http_pipe->pipe);
     } else {
       http_pipe->pipe.callback.on_close(&http_pipe->pipe, hm->resp_code);

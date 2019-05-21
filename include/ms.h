@@ -29,9 +29,10 @@
 #define MS_FREE free
 #endif
 
+char * ms_current_time_str(void);
 
 #ifndef MS_DBG
-#define MS_DBG(format, ...)  printf("[d:%s:%d] " format "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#define MS_DBG(format, ...)  printf("[d:%s %s:%d] " format "\n",  ms_current_time_str(), __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #endif
 
 #ifndef MS_ASSERT

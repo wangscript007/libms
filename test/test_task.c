@@ -13,7 +13,8 @@
 #include "fake_file.h"
 #include "fake_reader.h"
 #include "fake_pipe.h"
-
+#include <time.h>
+#include <stdlib.h>
 
 static struct ms_istorage *open_storage(void) {
   return (struct ms_istorage *)ms_mem_storage_open();
@@ -39,15 +40,24 @@ static struct ms_fake_reader *add_reader(struct ms_task *task, int64_t pos, int6
   return reader;
 }
 
-void test_task_1() {
-//  struct ms_test_task_case_1 *test_case = MS_MALLOC(sizeof(struct ms_test_task_case_1));
-//  memset(test_case, 0, sizeof(struct ms_test_task_case_1));
+static void expect_pipe_count(struct ms_task *task, int expect) {
+  int count = 0;
+  QUEUE *q;
+  struct ms_ipipe *pipe = NULL;
+  QUEUE_FOREACH(q, &task->pipes) {
+    pipe = QUEUE_DATA(q, struct ms_ipipe, node);
+    count += 1;
+  }
+  MS_ASSERT(count == expect);
+}
+
+static struct ms_task *prepare_task(struct ms_fake_reader **reader) {
   struct ms_factory factory = {
     open_storage,
     open_pipe_case_1
   };
-
-  int64_t filesize = 1024*1024*300;
+  
+  int64_t filesize = 1024*1024*100+12345;
   char url[MG_MAX_PATH] = {0};
   snprintf(url, MG_MAX_PATH, "http://127.0.0.1/test.mp4?filesize=%" INT64_FMT, filesize);
   struct ms_task *task = ms_task_open(mg_mk_str(url), factory);
@@ -61,22 +71,148 @@ void test_task_1() {
   }
   
   fake_pipe_header((struct ms_fake_pipe *)pipe);
-  fake_pipe_recv((struct ms_fake_pipe *)pipe, MS_PIECE_UNIT_SIZE*2);
-  fake_reader_start(reader1);
-  MS_ASSERT(reader1->reader.pos == MS_PIECE_UNIT_SIZE*2);
+  *reader = reader1;
+  return task;
+}
+
+void test_task_1() {
+  return;
+  srand((unsigned int)time(NULL));
+  struct ms_factory factory = {
+    open_storage,
+    open_pipe_case_1
+  };
+
+  int64_t filesize = 1024*1024*100+12345;
+  char url[MG_MAX_PATH] = {0};
+  snprintf(url, MG_MAX_PATH, "http://127.0.0.1/test.mp4?filesize=%" INT64_FMT, filesize);
+  struct ms_task *task = ms_task_open(mg_mk_str(url), factory);
+  struct ms_fake_reader *reader1 = add_reader(task, 0, filesize, filesize);
   
-  struct ms_fake_reader *reader2 = add_reader(task, 0, filesize, filesize);
+  QUEUE *q;
+  struct ms_ipipe *pipe = NULL;
+  QUEUE_FOREACH(q, &task->pipes) {
+    pipe = QUEUE_DATA(q, struct ms_ipipe, node);
+    break;
+  }
+  
+  fake_pipe_header((struct ms_fake_pipe *)pipe);
+  int64_t pos = 0;
+  while (pos < filesize) {
+    expect_pipe_count(task, 1);
+    int64_t len = MS_PIECE_UNIT_SIZE * (rand() % 8 + 1);
+    if (filesize - pos < len) {
+      len = filesize - pos;
+    }
+    fake_pipe_recv((struct ms_fake_pipe *)pipe, len);
+    fake_reader_start(reader1);
+    if (pos + len == filesize) {
+      pos = pos + len;
+    } else {
+      pos = (pos + len) - (pos + len) % MS_PIECE_UNIT_SIZE;
+    }
+    MS_ASSERT(reader1->reader.pos == pos);
+  }
 
   task->task.remove_reader(&task->task, &reader1->reader);
   fake_reader_close(reader1);
-  
-  task->task.remove_reader(&task->task, &reader2->reader);
-  fake_reader_close(reader2);
+
   task->task.close(&task->task);
-  
-//  MS_FREE(test_case);
 }
 
 void test_task_2() {
+  return;
+  srand((unsigned int)time(NULL));
+  struct ms_factory factory = {
+    open_storage,
+    open_pipe_case_1
+  };
+
+  int64_t filesize = 1024*1024*100+12345;
+  char url[MG_MAX_PATH] = {0};
+  snprintf(url, MG_MAX_PATH, "http://127.0.0.1/test.mp4?filesize=%" INT64_FMT, filesize);
+  struct ms_task *task = ms_task_open(mg_mk_str(url), factory);
+  struct ms_fake_reader *reader1 = add_reader(task, 0, filesize, filesize);
   
+  QUEUE *q;
+  struct ms_ipipe *pipe = NULL;
+  QUEUE_FOREACH(q, &task->pipes) {
+    pipe = QUEUE_DATA(q, struct ms_ipipe, node);
+    break;
+  }
+  
+  fake_pipe_header((struct ms_fake_pipe *)pipe);
+  int64_t pos = 0;
+  int64_t recv = 0;
+  while (pos < filesize) {
+    if (recv >= task->storage->max_cache_len(task->storage)) {
+      expect_pipe_count(task, 0);
+      break;
+    } else {
+      expect_pipe_count(task, 1);
+    }
+    int64_t len = MS_PIECE_UNIT_SIZE * (rand() % 8 + 1);
+    if (filesize - pos < len) {
+      len = filesize - pos;
+    }
+    fake_pipe_recv((struct ms_fake_pipe *)pipe, len);
+    recv += len;
+  }
+  
+  task->task.remove_reader(&task->task, &reader1->reader);
+  fake_reader_close(reader1);
+  
+  task->task.close(&task->task);
+}
+
+void test_task_3() {
+  srand((unsigned int)time(NULL));
+  struct ms_factory factory = {
+    open_storage,
+    open_pipe_case_1
+  };
+  
+  int64_t filesize = 1024*1024*100+12345;
+  char url[MG_MAX_PATH] = {0};
+  snprintf(url, MG_MAX_PATH, "http://127.0.0.1/test.mp4?filesize=%" INT64_FMT, filesize);
+  struct ms_task *task = ms_task_open(mg_mk_str(url), factory);
+  struct ms_fake_reader *reader1 = add_reader(task, 0, filesize, filesize);
+  
+  QUEUE *q;
+  struct ms_ipipe *pipe = NULL;
+  QUEUE_FOREACH(q, &task->pipes) {
+    pipe = QUEUE_DATA(q, struct ms_ipipe, node);
+    break;
+  }
+  
+  fake_pipe_header((struct ms_fake_pipe *)pipe);
+  int64_t pos = 0;
+  int64_t recv = 0;
+  while (pos < filesize) {
+    if (recv >= task->storage->max_cache_len(task->storage) / 2) {
+//      expect_pipe_count(task, 0);
+      break;
+    } else {
+      expect_pipe_count(task, 1);
+    }
+    int64_t len = MS_PIECE_UNIT_SIZE * (rand() % 8 + 1);
+    if (filesize - pos < len) {
+      len = filesize - pos;
+    }
+    fake_pipe_recv((struct ms_fake_pipe *)pipe, len);
+    recv += len;
+  }
+  
+  task->task.remove_reader(&task->task, &reader1->reader);
+  fake_reader_close(reader1);
+  
+  expect_pipe_count(task, 0);
+
+  struct ms_fake_reader *reader2 = add_reader(task, filesize / 2, filesize / 2, filesize);
+  expect_pipe_count(task, 1);
+
+  task->task.remove_reader(&task->task, &reader2->reader);
+  fake_reader_close(reader2);
+
+  task->task.close(&task->task);
 }

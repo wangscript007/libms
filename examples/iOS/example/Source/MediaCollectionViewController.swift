@@ -70,14 +70,14 @@ class MediaCollectionViewController: UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let vc = AVPlayerViewController()
         let item = items[indexPath.row]
-        let c_url = UnsafePointer<Int8>(item.url.absoluteString.cString(using: .ascii))
-        let c_path = UnsafePointer<Int8>(item.url.lastPathComponent.cString(using: .ascii))
-        
+        let c_url = item.url.absoluteString.cString(using: .utf8)
+        let c_path = item.url.lastPathComponent.cString(using: .utf8)
         var in_param = ms_url_param(url: c_url, path: c_path)
 
         let out_url = UnsafeMutablePointer<Int8>.allocate(capacity: 1024*1024)
         ms_generate_url(&in_param, out_url, 1024*1024)
         let proxy_url = String(cString: out_url)
+//        let proxy_url = "http://127.0.0.1:8000/wildo.mp4"
         vc.player = AVPlayer(url: URL(string: proxy_url)!)
         vc.player?.play()
         present(vc, animated: true, completion: nil)

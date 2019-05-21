@@ -8,9 +8,11 @@
 
 #include "ms_file_storage.h"
 
+// file io system
 struct ms_file_io_open_op {
-  char  *content_path;
-  char  *control_path;
+  char  *file_path;
+  int flags;
+  int mode;
 };
 
 struct ms_file_io_write_op {
@@ -28,9 +30,23 @@ struct ms_file_io_read_op {
 };
 
 struct ms_file_io_close_op {
-  int   content_fd;
-  int   control_fd;
+  int   fd;
 };
+
+enum ms_file_op_type {
+  ms_file_op_type_open,
+  ms_file_op_type_write,
+  ms_file_op_type_read,
+  ms_file_op_type_close,
+  ms_file_op_type_sync
+};
+
+struct ms_file_io_op {
+  enum ms_file_op_type op_type;
+  void *op;
+  QUEUE node;
+};
+
 
 static struct ms_file_storage *cast_from(struct ms_istorage *st) {
   return (struct ms_file_storage *)st;
@@ -50,6 +66,16 @@ static int64_t get_estimate_size(struct ms_istorage *st) {
   struct ms_file_storage *file_st = cast_from(st);
   return file_st->filesize;
 }
+
+static int64_t max_cache_len(struct ms_istorage *st) {
+  struct ms_file_storage *file_st = cast_from(st);
+  if (file_st->filesize == 0) {
+    return 1024*1024*1024;
+  } else {
+    return file_st->filesize;
+  }
+}
+
 
 static void set_content_size(struct ms_istorage *st, int64_t from, int64_t size) {
   
@@ -89,6 +115,7 @@ struct ms_file_storage *ms_file_storage_open(const char *url, const char *path) 
   file_st->st.write = storage_write;
   file_st->st.read = storage_read;
   file_st->st.close = storage_close;
+  file_st->st.max_cache_len = max_cache_len;
   
   MS_DBG("file_st:%p", file_st);
   return file_st;

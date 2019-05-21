@@ -28,6 +28,14 @@ MS_STRINGIFY(MS_VERSION_PATCH)
 # define MS_VERSION_STRING  MS_VERSION_STRING_BASE "-" MS_VERSION_SUFFIX
 #endif
 
+char * ms_current_time_str() {
+  static char buffer[26] = {0};
+  time_t rawtime;
+  time (&rawtime);
+  struct tm* tm_info = localtime(&rawtime);
+  strftime(buffer, 26, "%H:%M:%S", tm_info);
+  return buffer;
+}
 
 unsigned int ms_version(void) {
   return MS_VERSION_HEX;
@@ -172,6 +180,14 @@ static struct ms_task *find_or_create_task(const char *url, struct ms_server *se
   task = ms_task_open(mg_mk_str(url), factory);
   QUEUE_INSERT_TAIL(&server->tasks, &task->node);
   return task;
+}
+
+static void dispatch_task() {
+  
+}
+
+static void close_timeout_connections() {
+  
 }
 
 static int has_prefix(const struct mg_str *uri, const struct mg_str *prefix) {
@@ -327,7 +343,7 @@ static void api_handler(struct mg_connection *nc, int ev, void *p) {
     struct http_message *hm = (struct http_message *)p;
     if (is_equal(&api_tasks, &hm->uri)) {
       return get_task_list_handler(nc, ev, p);
-    } else if (has_prefix(&api_tasks, &hm->uri)) {
+    } else if (has_prefix(&hm->uri, &api_tasks)) {
       return get_task_handler(nc, ev, p);
     } else {
       mg_serve_http(nc, hm, server->opts);
@@ -346,6 +362,22 @@ static void stream_handler(struct mg_connection *nc, int ev, void *p) {
     char url[MG_MAX_HTTP_REQUEST_SIZE] = {0};
     mg_get_http_var(&hm->query_string, "url", url, MG_MAX_HTTP_REQUEST_SIZE);
     MS_DBG("%s", url);
+    
+    int i = 0;
+    for (i = 0; i < MG_MAX_HTTP_HEADERS && hm->header_names[i].len > 0; i++) {
+      struct mg_str hn = hm->header_names[i];
+      struct mg_str hv = hm->header_values[i];
+//      MS_DBG("%.*s: %.*s", (int)hn.len, hn.p, (int)hv.len, hv.p);
+      printf("%.*s: %.*s\n", (int)hn.len, hn.p, (int)hv.len, hv.p);
+    }
+    
+    struct ms_session *session = find_session(nc, server);
+    if (session) {
+      session->task->remove_reader(session->task, (struct ms_ireader *)session);
+      QUEUE_REMOVE(&session->node);
+      ms_session_close(session);
+    }
+
     struct ms_task *task = find_or_create_task(url, server);
     if (task) {
       struct ms_session *session = ms_session_open(nc, hm, &task->task);
@@ -355,6 +387,7 @@ static void stream_handler(struct mg_connection *nc, int ev, void *p) {
       ms_session_try_transfer_data(session);
       ms_session_close_if_need(session);
     }
+
   }
 }
 
@@ -369,9 +402,9 @@ static void server_handler(struct mg_connection *nc, int ev, void *p) {
     static const struct mg_str stream_prefix = MG_MK_STR("/stream/");
     static const struct mg_str api_prefix = MG_MK_STR("/api/");
     struct http_message *hm = (struct http_message *)p;
-    if (has_prefix(&stream_prefix, &hm->uri)) {
+    if (has_prefix(&hm->uri, &stream_prefix)) {
       return stream_handler(nc, ev, p);
-    } else if (has_prefix(&api_prefix, &hm->uri)) {
+    } else if (has_prefix(&hm->uri, &api_prefix)) {
       return api_handler(nc, ev, p);
     }
     mg_serve_http(nc, hm, server->opts);
@@ -441,6 +474,7 @@ void ms_start(const char *http_port, const char *path, void (*callback)(void)) {
   
   while (s_exit_flag == 0) {
     mg_mgr_poll(&s_server.mgr, 1000);
+    close_timeout_connections();
   }
   remove_task_if_need(&s_server, 0);
   mg_mgr_free(&s_server.mgr);
@@ -453,6 +487,7 @@ void ms_stop() {
 }
 
 static void *server_thread(void *argv) {
+  pthread_setname_np("libms");
   ms_start("8090", "", NULL);
   return NULL;
 }
@@ -464,15 +499,16 @@ void ms_asnyc_start() {
   (void) pthread_attr_init(&attr);
   (void) pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
   
-  
   pthread_create(&thread_id, &attr, server_thread, NULL);
   pthread_attr_destroy(&attr);
 }
 
 int ms_generate_url(const struct ms_url_param *input, char *out_url, size_t out_len) {
+  MS_DBG("%s", input->url);
   struct mg_str encode = mg_url_encode_opt(mg_mk_str(input->url), mg_mk_str("._-$,;~()"), 0);
-  int ret = snprintf(out_url, out_len - 1, "http://127.0.0.1:%s/stream/%s?url=%s", ms_default_server()->port, input->path, encode.p);
+  int ret = snprintf(out_url, out_len - 1, "http://127.0.0.1:%s/stream/%s?url=%.*s", ms_default_server()->port, input->path, (int)encode.len, encode.p);
   MS_FREE((void *) encode.p);
+  MS_DBG("%d, %s", ret, out_url);
   return ret;
 }
 

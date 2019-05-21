@@ -31,10 +31,11 @@ typedef void (*on_case_done)(void);
 
 
 #define TEST_CASE_MAP2(XX)                                    \
-        XX(SERVER_REDIRECT_1, server_redirect1)              \
-        XX(SERVER_REDIRECT_2, server_redirect2)              \
-        XX(SERVER_REDIRECT_3, server_redirect3)              \
-        XX(SERVER_REDIRECT_4, server_redirect4)              \
+        XX(SERVER_REDIRECT_1, server_keepalive)
+
+//        XX(SERVER_REDIRECT_2, server_redirect2)              \
+//        XX(SERVER_REDIRECT_3, server_redirect3)              \
+//        XX(SERVER_REDIRECT_4, server_redirect4)              \
 
 
 #define GEN_TEST_ENTRY(i, f) void test_##f(on_case_done);
@@ -46,15 +47,16 @@ void run_async_tests(const char *path);
 
 // sync tests
 
-#define SYNC_TEST_CASE_MAP(XX)              \
+#define SYNC_TEST_CASE_MAP2(XX)              \
       XX(MEM_STORAGE,  mem_storage)         \
       XX(FILE_STORAGE, file_storage)        \
       XX(TASK_1, task_1)                    \
       XX(TASK_2, task_2)                    \
 
-// #define SYNC_TEST_CASE_MAP(XX)     \
-//         XX(TASK_1, task_1)         \
-//         XX(TASK_2, task_2)
+#define SYNC_TEST_CASE_MAP(XX)      \
+         XX(TASK_1, task_1)         \
+         XX(TASK_2, task_2)         \
+         XX(TASK_3, task_3)
 
 
 #define GEN_SYNC_TEST_ENTRY(i, f) void test_##f(void);

@@ -22,6 +22,7 @@ struct ms_istorage {
   size_t  (*read)(struct ms_istorage *st, char *buf, int64_t pos, size_t len);
   void    (*close)(struct ms_istorage *st);
   char *  (*get_bitmap)(struct ms_istorage *st);
+  int64_t (*max_cache_len)(struct ms_istorage *st);
 };
 
 struct ms_ireader {

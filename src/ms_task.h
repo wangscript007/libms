@@ -19,6 +19,10 @@ struct ms_task {
   struct mg_str   redirect_url;
   struct ms_factory factory;
   struct mg_str   content_type;
+  struct mg_str   etag;
+  struct mg_str   date;
+  struct mg_str   last_modified;
+  
   struct ms_istorage *storage;
 //  struct mg_connection *timer;
   

@@ -244,6 +244,80 @@ void test_server_invalid(on_case_done callback) {
   struct mg_connection *nc = mg_connect_http(&ms_default_server()->mgr, test_invalid_handler, ms_url, extra_headers, NULL);
   nc->user_data = test_case;
 }
+
+
+static void test_keepalive_handler(struct mg_connection *nc, int ev, void *ev_data) {
+  if (ev != MG_EV_POLL && ev != MG_EV_RECV && ev != MG_EV_HTTP_CHUNK) {
+    MS_DBG("%s", ms_str_of_ev(ev));
+  }
+  
+  struct ms_test_client *client = (struct ms_test_client *)nc->user_data;
+  
+  if (ev == MG_EV_RECV) {
+    
+  } else if (ev == MG_EV_HTTP_CHUNK) {
+    struct http_message *hm = (struct http_message *)ev_data;
+    if (hm->body.len == 0) {
+      return;
+    }
+    struct mg_str *v = mg_get_http_header(hm, "Content-Length");
+    struct mg_str cl = mg_strdup_nul(*v);
+    int64_t size = to64(cl.p);
+    MS_FREE((void *)cl.p);
+    MS_ASSERT(size==client->size);
+    //        MS_DBG("%lld, %zu, %lld", client->pos, hm->body.len, client->pos + hm->body.len);
+    check_buf(client, hm->body.p, client->pos, hm->body.len);
+    client->pos += hm->body.len;
+    nc->flags |= MG_F_DELETE_CHUNK;
+  } else if (ev == MG_EV_HTTP_REPLY) {
+    nc->flags |= MG_F_CLOSE_IMMEDIATELY;
+    client->complete = 1;
+  } else if (ev == MG_EV_CLOSE) {
+    MS_ASSERT(client->complete);
+    MS_ASSERT(client->pos == client->end);
+    if (client->callback) {
+      client->callback();
+    }
+    close(client->fp);
+    MS_FREE(client);
+  }
+}
+
+void test_server_keepalive(on_case_done callback) {
+  int64_t pos = 0;
+  int64_t len = 0;
+  char origin_url[MG_MAX_HTTP_REQUEST_SIZE] = {0};
+  char ms_url[MG_MAX_HTTP_REQUEST_SIZE] = {0};
+  
+  struct ms_fake_nc *nct = nc_of(ms_fake_type_normal);
+  fake_url(nct, origin_url, MG_MAX_PATH);
+  struct ms_url_param param = {origin_url, "test.mp4"};
+  ms_generate_url(&param, ms_url, MG_MAX_HTTP_REQUEST_SIZE);
+  MS_DBG("%s, %s", origin_url, ms_url);
+  
+  MS_ASSERT(pos + len <= nct->filesize);
+  char extra_headers[128] = {0};
+  if (len == 0) {
+    snprintf(extra_headers, 128, "Range: bytes=%" INT64_FMT "-\r\n", pos);
+  } else {
+    snprintf(extra_headers, 128, "Range: bytes=%" INT64_FMT "-%" INT64_FMT "\r\n", pos, pos + len - 1);
+  }
+  struct mg_connection *nc = mg_connect_http(&ms_default_server()->mgr, test_keepalive_handler, ms_url, extra_headers, NULL);
+  struct ms_test_client *client = MS_MALLOC(sizeof(struct ms_test_client));
+  memset(client, 0, sizeof(struct ms_test_client));
+  client->callback = callback;
+  client->fp = open(nct->path, O_RDONLY);
+  client->pos = pos;
+  if (len == 0) {
+    client->size = nct->filesize - pos;
+  } else {
+    client->size = len;
+  }
+  client->end = client->pos + client->size;
+  nc->user_data = client;
+
+}
+
 /*
 struct ms_test_head_server_case {
   on_case_done callback;

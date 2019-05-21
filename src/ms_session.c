@@ -53,10 +53,13 @@ static size_t try_transfer_data(struct ms_session *session) {
     // TODO: support reader.len == 0
     return 0;
   }
+  if (session->task->get_filesize(session->task) == 0) {
+    return 0;
+  }
   
   if (!(session->connection->flags & MS_F_HEADER_SEND)) {
     session->connection->flags |= MS_F_HEADER_SEND;
-    MS_DBG("session:%p, send head content-length: %" INT64_FMT, session, session->reader.len);
+    MS_DBG("session:%p, send head content-length: %" INT64_FMT", filesize: %"INT64_FMT, session, session->reader.len, session->task->get_filesize(session->task));
     // TODO: 1. keep-alive 2. proxy headers like `content-type`, 3. reader.len == 0
     
     struct mg_str ct = session->task->content_type(session->task);
@@ -64,8 +67,9 @@ static size_t try_transfer_data(struct ms_session *session) {
     snprintf(header_str, MG_MAX_HTTP_SEND_MBUF, "Content-Type: %s\r\n"
              "Accept-Ranges: bytes\r\n"
              "Content-Range: bytes %" INT64_FMT "-%" INT64_FMT "/%" INT64_FMT "\r\n"
-             "Connection: keep-alive", ct.p, session->reader.pos, session->reader.len - session->reader.pos - 1, session->task->get_filesize(session->task));
-    
+             "Connection: keep-alive", ct.p, session->reader.pos, session->reader.len + session->reader.pos - 1, session->task->get_filesize(session->task));
+    MS_DBG("%s", header_str);
+//    MS_ASSERT(session->reader.len - session->reader.pos - 1 > 0);
     int resp_code = 206;
     if (session->method == MS_HTTP_HEAD) {
       resp_code = 200;
@@ -112,7 +116,7 @@ static size_t try_transfer_data(struct ms_session *session) {
   check_buf(session, session->buf.buf, session->reader.pos + session->reader.sending, len);
   MS_ASSERT(session->reader.req_len == 0 || session->reader.pos + session->reader.sending + len <= session->reader.req_pos + session->reader.req_len);
   
-  // MS_DBG("session:%p %x,%x,%x,%x,%x, send %lld, %zu, read:%zu, send_mbuf:%zu",session, session->buf.buf[0], session->buf.buf[1], session->buf.buf[2], session->buf.buf[3], session->buf.buf[4], read_from, len, read, session->connection->send_mbuf.len);
+//  MS_DBG("session:%p %x,%x,%x,%x,%x, send %lld, %zu, read:%zu, send_mbuf:%zu",session, session->buf.buf[0], session->buf.buf[1], session->buf.buf[2], session->buf.buf[3], session->buf.buf[4], read_from, len, read, session->connection->send_mbuf.len);
   
   session->reader.sending += len;
   mbuf_remove(&session->buf, len);
@@ -143,8 +147,11 @@ static void on_send(struct ms_ireader *reader, int num_sent_bytes) {
     }
   }
   
-  // MS_DBG("session:%p pos:%lld, len:%d, left:%lld", session, session->reader.pos, body_len, session->reader.len);
-  MS_ASSERT(session->reader.len > 0);
+//  MS_DBG("session:%p pos:%lld, len:%d, left:%lld, num_sent_bytes:%d, send_mbuf.len:%zu", session, session->reader.pos, body_len, session->reader.len, num_sent_bytes, session->connection->send_mbuf.len);
+//  MS_ASSERT(session->reader.len > 0);
+  if (session->reader.len == 0) {
+    return;
+  }
   
   session->reader.pos += body_len;
   if (session->reader.len > 0) {
@@ -154,7 +161,12 @@ static void on_send(struct ms_ireader *reader, int num_sent_bytes) {
   session->reader.sending -= body_len;
   
   if (session->reader.len == 0 && session->reader.sending == 0) {
-    session->connection->flags |= MG_F_CLOSE_IMMEDIATELY;
+//    session->connection->flags |= MG_F_CLOSE_IMMEDIATELY;
+//    session->waiting = 1;
+    
+    session->task->remove_reader(session->task, (struct ms_ireader *)session);
+    QUEUE_REMOVE(&session->node);
+    ms_session_close(session);
     return;
   }
   
@@ -163,7 +175,13 @@ static void on_send(struct ms_ireader *reader, int num_sent_bytes) {
 }
 
 static void on_filesize(struct ms_ireader *reader, int64_t filesize) {
-
+//  if (reader->len > 0) {
+//    return;
+//  }
+//  struct ms_session *session = (struct ms_session *)reader;
+//  if (filesize > 0) {
+//    reader->len = filesize - reader->pos;
+//  }
 }
 
 static void on_content_size_from(struct ms_ireader *reader, int64_t pos, int64_t size) {
@@ -202,11 +220,13 @@ struct ms_session *ms_session_open(struct mg_connection *nc, struct http_message
   MS_DBG("session:%p, nc:%p", session, nc);
   QUEUE_INIT(&session->node);
   QUEUE_INIT(&session->reader.node);
-  session->method = ms_http_method_enum(hm->method);
   session->connection = nc;
-  session->task = task;
   mbuf_init(&session->buf, MS_SEND_BUF_LIMIT);
+  session->connection->flags &= ~MS_F_HEADER_SEND;
   //    session->buf
+//  session->waiting = 0;
+  session->method = ms_http_method_enum(hm->method);
+  session->task = task;
   int n = 0;
   int64_t r1 = 0, r2 = 0;
   struct mg_str *range_hdr = mg_get_http_header(hm, "Range");
@@ -238,10 +258,10 @@ struct ms_session *ms_session_open(struct mg_connection *nc, struct http_message
   if (session->reader.len == 0 && filesize > 0) {
     session->reader.len = filesize - session->reader.pos;
   }
-  
   // session->fp = open("/Users/wujianguo/Documents/build/wildo.mp4", O_RDONLY);
   return session;
 }
+
 
 size_t ms_session_try_transfer_data(struct ms_session *session) {
   return try_transfer_data(session);
@@ -262,7 +282,7 @@ void ms_session_close_if_need(struct ms_session *session) {
 }
 
 void ms_session_close(struct ms_session *session) {
-  MS_DBG("session:%p", session);
+  MS_DBG("session:%p, sending: %zu, len:%"INT64_FMT, session, session->reader.sending, session->reader.len);
   if (session->fp > 0) {
     close(session->fp);
   }
