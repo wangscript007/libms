@@ -248,6 +248,120 @@ static int64_t max_cache_len(struct ms_istorage *st) {
   return 30*1024*1024;
 }
 
+static int64_t max_cache_left(struct ms_istorage *st) {
+  return 2*1024*1024;
+}
+
+static int64_t hold_head_size(struct ms_istorage *st) {
+  return 2*1024*1024;
+}
+
+static int64_t hold_size(struct ms_istorage *st, int pos_count) {
+  return hold_head_size(st) + (max_cache_left(st) + max_cache_len(st)) * pos_count;
+}
+
+static void hold_range_from(struct ms_istorage *st, int64_t pos, int64_t *from, int64_t *end) {
+  int64_t left = max_cache_left(st);
+  if (pos < left) {
+    *from = 0;
+  } else {
+    *from = pos - left;
+  }
+  *end = pos + max_cache_len(st);
+}
+
+static int should_hold_block(struct ms_istorage *st, int index_for_block, int64_t *hold_pos, int hold_pos_len) {
+  int i = 0;
+  for (; i < hold_pos_len; ++i) {
+    int64_t hold_from, hold_end;
+    hold_range_from(st, hold_pos[i], &hold_from, &hold_end);
+    int64_t block_start = index_for_block * MS_BLOCK_UNIT_SIZE;
+    int64_t block_end = block_start + MS_BLOCK_UNIT_SIZE;
+    if (hold_from <= block_start && block_end <= hold_end) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+static int should_hold_piece(struct ms_istorage *st, int index_for_block, int index_for_piece, int64_t *hold_pos, int hold_pos_len) {
+  int i = 0;
+  for (; i < hold_pos_len; ++i) {
+    int64_t hold_from, hold_end;
+    hold_range_from(st, hold_pos[i], &hold_from, &hold_end);
+    int64_t piece_start = index_for_block * MS_BLOCK_UNIT_SIZE + index_for_piece * MS_PIECE_UNIT_SIZE;
+    int64_t piece_end = piece_start + MS_PIECE_UNIT_SIZE;
+    if (hold_from <= piece_start && piece_end <= hold_end) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+static size_t piece_len(struct ms_istorage *st, int index_for_block, int index_for_piece) {
+  int64_t start = index_for_block * MS_BLOCK_UNIT_SIZE + index_for_piece * MS_PIECE_UNIT_SIZE;
+  int64_t filesize = st->get_filesize(st);
+  if (start + MS_PIECE_UNIT_SIZE > filesize) {
+    return filesize - start;
+  } else {
+    return MS_PIECE_UNIT_SIZE;
+  }
+}
+
+static void clear_buffer_for(struct ms_istorage *st, int64_t pos, size_t len, int64_t *hold_pos, int hold_pos_len) {
+  struct ms_mem_storage *mem_st = cast_from(st);
+  if (mem_st->completed_size + len <= hold_size(st, hold_pos_len)) {
+    return;
+  }
+  
+//  int index = 0;
+//  for (; index < hold_pos_len; ++index) {
+//    MS_DBG("%"INT64_FMT, hold_pos[index]);
+//  }
+  
+  int release_len = (int)len;
+  int64_t from = hold_head_size(st);
+  int index_for_block = block_index(from);
+  int index_for_piece = piece_index(from);
+  
+  int num = block_num(mem_st->estimate_size);
+  for (; index_for_block < num; ++index_for_block) {
+    struct ms_block *block = mem_st->blocks[index_for_block];
+    if (!block) {
+      continue;
+    }
+    if (should_hold_block(st, index_for_block, hold_pos, hold_pos_len)) {
+      continue;
+    }
+    index_for_piece = 0;
+    int buf_count = 0;
+    int release_count = 0;
+    for (; index_for_piece < MS_PIECE_NUM_OF_PER_BLOCK; ++index_for_piece) {
+      struct ms_piece *piece = &block->pieces[index_for_piece];
+      if (!piece->buf) {
+        continue;
+      }
+      buf_count += 1;
+      if (should_hold_piece(st, index_for_block, index_for_piece, hold_pos, hold_pos_len)) {
+        continue;
+      }
+      release_count += 1;
+//      MS_DBG("release block %d, piece %d, start pos %d", index_for_block, index_for_piece, index_for_block * MS_BLOCK_UNIT_SIZE + index_for_piece * MS_PIECE_UNIT_SIZE);
+      ms_free_piece_buf(piece->buf);
+      piece->buf = (char *)0;
+      mem_st->completed_size -= piece_len(st, index_for_block, index_for_piece);
+      release_len -= piece_len(st, index_for_block, index_for_piece);
+    }
+    if (release_count > 0 && release_count == buf_count) {
+      MS_FREE(block);
+      mem_st->blocks[index_for_block] = (struct ms_block *)0;
+    }
+    if (release_len <= 0) {
+      return;
+    }
+  }
+}
+
 static void cached_from(struct ms_istorage *st, int64_t from, int64_t *pos, int64_t *len) {
   *pos = 0;
   *len = 0;
@@ -329,12 +443,13 @@ static size_t storage_write(struct ms_istorage *st, const char *buf, int64_t pos
     int index_for_piece = piece_index(pos + write);
     while (write < len) {
       struct ms_piece *piece = &block->pieces[index_for_piece];
-      if (!piece->buf) {
-        piece->buf = ms_malloc_piece_buf();
-      }
       size_t write_len = MS_PIECE_UNIT_SIZE;
       if (write_len > len - write) {
         write_len = len - write;
+      }
+      if (!piece->buf) {
+        piece->buf = ms_malloc_piece_buf();
+        mem_st->completed_size += write_len;
       }
       memcpy(piece->buf, buf + write, write_len);
       write += write_len;
@@ -352,7 +467,7 @@ static size_t storage_write(struct ms_istorage *st, const char *buf, int64_t pos
   }
 //  MS_DBG("%lld, %zu, write: %zu", pos, len, write);
 //  print_bitfield(st);
-  mem_st->completed_size += write;
+//  mem_st->completed_size += write;
   return write;
 }
 
@@ -441,6 +556,7 @@ struct ms_mem_storage *ms_mem_storage_open() {
   mem_st->st.close = storage_close;
   mem_st->st.get_bitmap = get_bitmap;
   mem_st->st.max_cache_len = max_cache_len;
+  mem_st->st.clear_buffer_for = clear_buffer_for;
   
   MS_DBG("mem_st:%p", mem_st);
   return mem_st;

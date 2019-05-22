@@ -144,12 +144,27 @@ static void on_content_size(struct ms_ipipe *pipe, int64_t pos, int64_t size) {
 static void on_recv(struct ms_ipipe *pipe, const char *buf, int64_t pos, size_t len) {
   struct ms_task *task = cast_from(pipe->user_data);
   // TODO: 淘汰缓存
-  size_t write = task->storage->write(task->storage, buf, pos, len);
-  MS_ASSERT(write == len);
-  //    ms_http_pipe_forward(pipe, write);
-  
+  int hold_pos_len = 0;
   QUEUE *q;
   struct ms_ireader *reader = NULL;
+  QUEUE_FOREACH(q, &task->readers) {
+    reader = QUEUE_DATA(q, struct ms_ireader, node);
+    hold_pos_len += 1;
+  }
+
+  int64_t *hold_pos = (int64_t *)MS_MALLOC(sizeof(hold_pos) * hold_pos_len);
+  memset(hold_pos, 0, sizeof(hold_pos) * hold_pos_len);
+  int index = 0;
+  QUEUE_FOREACH(q, &task->readers) {
+    reader = QUEUE_DATA(q, struct ms_ireader, node);
+    hold_pos[index] = reader->pos + reader->sending;
+  }
+
+  task->storage->clear_buffer_for(task->storage, pos, len, hold_pos, hold_pos_len);
+  size_t write = task->storage->write(task->storage, buf, pos, len);
+  MS_ASSERT(write == len);
+  
+  
   QUEUE_FOREACH(q, &task->readers) {
     reader = QUEUE_DATA(q, struct ms_ireader, node);
     reader->on_recv(reader, pos, len); // TODO: on_recv maybe remove this pipe?
