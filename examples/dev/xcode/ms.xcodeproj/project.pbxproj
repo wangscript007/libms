@@ -7,6 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		81F6833C2297B0E700751A41 /* ms_preloader.h in Headers */ = {isa = PBXBuildFile; fileRef = 81F6833A2297B0E700751A41 /* ms_preloader.h */; };
+		81F6833D2297B0E700751A41 /* ms_preloader.c in Sources */ = {isa = PBXBuildFile; fileRef = 81F6833B2297B0E700751A41 /* ms_preloader.c */; };
+		81F683402297BD1A00751A41 /* ms_server_handler.h in Headers */ = {isa = PBXBuildFile; fileRef = 81F6833E2297BD1A00751A41 /* ms_server_handler.h */; };
+		81F683412297BD1A00751A41 /* ms_server_handler.c in Sources */ = {isa = PBXBuildFile; fileRef = 81F6833F2297BD1A00751A41 /* ms_server_handler.c */; };
+		81F683442297BD2F00751A41 /* ms_task_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 81F683422297BD2F00751A41 /* ms_task_manager.h */; };
+		81F683452297BD2F00751A41 /* ms_task_manager.c in Sources */ = {isa = PBXBuildFile; fileRef = 81F683432297BD2F00751A41 /* ms_task_manager.c */; };
+		81F683482297BD3C00751A41 /* ms_session_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 81F683462297BD3C00751A41 /* ms_session_manager.h */; };
+		81F683492297BD3C00751A41 /* ms_session_manager.c in Sources */ = {isa = PBXBuildFile; fileRef = 81F683472297BD3C00751A41 /* ms_session_manager.c */; };
+		81F6834C2297BD4B00751A41 /* ms_preloader_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 81F6834A2297BD4B00751A41 /* ms_preloader_manager.h */; };
+		81F6834D2297BD4B00751A41 /* ms_preloader_manager.c in Sources */ = {isa = PBXBuildFile; fileRef = 81F6834B2297BD4B00751A41 /* ms_preloader_manager.c */; };
+		81F683542297D97000751A41 /* ms_stream_handler.h in Headers */ = {isa = PBXBuildFile; fileRef = 81F683522297D97000751A41 /* ms_stream_handler.h */; };
+		81F683552297D97000751A41 /* ms_stream_handler.c in Sources */ = {isa = PBXBuildFile; fileRef = 81F683532297D97000751A41 /* ms_stream_handler.c */; };
+		81F683582297DC4200751A41 /* ms_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 81F683562297DC4200751A41 /* ms_common.h */; };
+		81F683592297DC4200751A41 /* ms_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 81F683572297DC4200751A41 /* ms_common.c */; };
 		81FBF44B221157330001A10F /* mongoose.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FBF445221157330001A10F /* mongoose.h */; };
 		81FBF44C221157330001A10F /* ms.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FBF446221157330001A10F /* ms.h */; };
 		81FBF44D221157330001A10F /* queue.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FBF44A221157330001A10F /* queue.h */; };
@@ -49,6 +63,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		81F6833A2297B0E700751A41 /* ms_preloader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ms_preloader.h; sourceTree = "<group>"; };
+		81F6833B2297B0E700751A41 /* ms_preloader.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ms_preloader.c; sourceTree = "<group>"; };
+		81F6833E2297BD1A00751A41 /* ms_server_handler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ms_server_handler.h; sourceTree = "<group>"; };
+		81F6833F2297BD1A00751A41 /* ms_server_handler.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ms_server_handler.c; sourceTree = "<group>"; };
+		81F683422297BD2F00751A41 /* ms_task_manager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ms_task_manager.h; sourceTree = "<group>"; };
+		81F683432297BD2F00751A41 /* ms_task_manager.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ms_task_manager.c; sourceTree = "<group>"; };
+		81F683462297BD3C00751A41 /* ms_session_manager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ms_session_manager.h; sourceTree = "<group>"; };
+		81F683472297BD3C00751A41 /* ms_session_manager.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ms_session_manager.c; sourceTree = "<group>"; };
+		81F6834A2297BD4B00751A41 /* ms_preloader_manager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ms_preloader_manager.h; sourceTree = "<group>"; };
+		81F6834B2297BD4B00751A41 /* ms_preloader_manager.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ms_preloader_manager.c; sourceTree = "<group>"; };
+		81F683522297D97000751A41 /* ms_stream_handler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ms_stream_handler.h; sourceTree = "<group>"; };
+		81F683532297D97000751A41 /* ms_stream_handler.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ms_stream_handler.c; sourceTree = "<group>"; };
+		81F683562297DC4200751A41 /* ms_common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ms_common.h; sourceTree = "<group>"; };
+		81F683572297DC4200751A41 /* ms_common.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ms_common.c; sourceTree = "<group>"; };
 		81FBF43A2211569D0001A10F /* libms.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libms.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		81FBF445221157330001A10F /* mongoose.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mongoose.h; sourceTree = "<group>"; };
 		81FBF446221157330001A10F /* ms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms.h; sourceTree = "<group>"; };
@@ -164,6 +192,20 @@
 				81FBF451221157710001A10F /* ms_session.h */,
 				81FBF45E221157710001A10F /* ms_task.c */,
 				81FBF452221157710001A10F /* ms_task.h */,
+				81F6833A2297B0E700751A41 /* ms_preloader.h */,
+				81F6833B2297B0E700751A41 /* ms_preloader.c */,
+				81F6833E2297BD1A00751A41 /* ms_server_handler.h */,
+				81F6833F2297BD1A00751A41 /* ms_server_handler.c */,
+				81F683422297BD2F00751A41 /* ms_task_manager.h */,
+				81F683432297BD2F00751A41 /* ms_task_manager.c */,
+				81F683462297BD3C00751A41 /* ms_session_manager.h */,
+				81F683472297BD3C00751A41 /* ms_session_manager.c */,
+				81F6834A2297BD4B00751A41 /* ms_preloader_manager.h */,
+				81F6834B2297BD4B00751A41 /* ms_preloader_manager.c */,
+				81F683522297D97000751A41 /* ms_stream_handler.h */,
+				81F683532297D97000751A41 /* ms_stream_handler.c */,
+				81F683562297DC4200751A41 /* ms_common.h */,
+				81F683572297DC4200751A41 /* ms_common.c */,
 			);
 			name = src;
 			path = ../../../../src;
@@ -209,15 +251,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				81FBF463221157720001A10F /* ms_memory_pool.h in Headers */,
+				81F683542297D97000751A41 /* ms_stream_handler.h in Headers */,
 				81FBF462221157720001A10F /* ms_http_pipe.h in Headers */,
 				81FBF466221157720001A10F /* ms_file_storage.h in Headers */,
 				81FBF44D221157330001A10F /* queue.h in Headers */,
+				81F683402297BD1A00751A41 /* ms_server_handler.h in Headers */,
 				81FBF464221157720001A10F /* ms_session.h in Headers */,
+				81F683442297BD2F00751A41 /* ms_task_manager.h in Headers */,
 				81FBF465221157720001A10F /* ms_task.h in Headers */,
 				81FBF44C221157330001A10F /* ms.h in Headers */,
 				81FBF46E221157720001A10F /* ms_server.h in Headers */,
+				81F6833C2297B0E700751A41 /* ms_preloader.h in Headers */,
+				81F683482297BD3C00751A41 /* ms_session_manager.h in Headers */,
 				81FBF468221157720001A10F /* ms_mem_storage.h in Headers */,
+				81F6834C2297BD4B00751A41 /* ms_preloader_manager.h in Headers */,
 				81FBF44B221157330001A10F /* mongoose.h in Headers */,
+				81F683582297DC4200751A41 /* ms_common.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -309,10 +358,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				81F6834D2297BD4B00751A41 /* ms_preloader_manager.c in Sources */,
+				81F6833D2297B0E700751A41 /* ms_preloader.c in Sources */,
 				81FBF46B221157720001A10F /* ms_session.c in Sources */,
 				81FBF46A221157720001A10F /* ms_http_pipe.c in Sources */,
+				81F683592297DC4200751A41 /* ms_common.c in Sources */,
 				81FBF46D221157720001A10F /* ms_task.c in Sources */,
+				81F683452297BD2F00751A41 /* ms_task_manager.c in Sources */,
+				81F683552297D97000751A41 /* ms_stream_handler.c in Sources */,
 				81FBF46C221157720001A10F /* mongoose.c in Sources */,
+				81F683492297BD3C00751A41 /* ms_session_manager.c in Sources */,
+				81F683412297BD1A00751A41 /* ms_server_handler.c in Sources */,
 				81FBF46F221157720001A10F /* ms_mem_storage.c in Sources */,
 				81FBF470221157720001A10F /* ms_file_storage.c in Sources */,
 				81FBF469221157720001A10F /* ms_memory_pool.c in Sources */,

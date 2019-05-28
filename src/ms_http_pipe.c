@@ -195,7 +195,7 @@ static void pipe_handler(struct mg_connection *nc, int ev, void *ev_data) {
       mbuf_append(&http_pipe->buf, hm->body.p + off + recv, data_size);
     }
     
-    if (http_pipe->pos + http_pipe->buf.len == http_pipe->req_pos + http_pipe->len) {
+    if (http_pipe->pos + (int64_t)http_pipe->buf.len == http_pipe->req_pos + (int64_t)http_pipe->len) {
       // TODO: first pos += len, then callback recv
       http_pipe->pos += http_pipe->buf.len;
       http_pipe->pipe.callback.on_recv(&http_pipe->pipe, http_pipe->buf.buf, http_pipe->pos - http_pipe->buf.len, http_pipe->buf.len);

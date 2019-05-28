@@ -64,6 +64,7 @@ struct ms_server {
   
   QUEUE   sessions;
   QUEUE   tasks;
+  QUEUE   preloaders;
 };
 
 char *ms_str_of_ev(int ev);

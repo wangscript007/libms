@@ -25,6 +25,20 @@
 		815CC06A224DF91E009EE3AC /* ms_server.h in Headers */ = {isa = PBXBuildFile; fileRef = 815CC05B224DF91D009EE3AC /* ms_server.h */; };
 		815CC06B224DF91E009EE3AC /* ms_mem_storage.c in Sources */ = {isa = PBXBuildFile; fileRef = 815CC05C224DF91D009EE3AC /* ms_mem_storage.c */; };
 		815CC06C224DF91E009EE3AC /* ms_file_storage.c in Sources */ = {isa = PBXBuildFile; fileRef = 815CC05D224DF91D009EE3AC /* ms_file_storage.c */; };
+		81F7C2FE229D248D00048C27 /* ms_preloader_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 81F7C2F0229D248C00048C27 /* ms_preloader_manager.h */; };
+		81F7C2FF229D248D00048C27 /* ms_task_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 81F7C2F1229D248C00048C27 /* ms_task_manager.h */; };
+		81F7C300229D248D00048C27 /* ms_server_handler.h in Headers */ = {isa = PBXBuildFile; fileRef = 81F7C2F2229D248C00048C27 /* ms_server_handler.h */; };
+		81F7C301229D248D00048C27 /* ms_preloader.h in Headers */ = {isa = PBXBuildFile; fileRef = 81F7C2F3229D248C00048C27 /* ms_preloader.h */; };
+		81F7C302229D248D00048C27 /* ms_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 81F7C2F4229D248C00048C27 /* ms_common.h */; };
+		81F7C303229D248D00048C27 /* ms_stream_handler.c in Sources */ = {isa = PBXBuildFile; fileRef = 81F7C2F5229D248C00048C27 /* ms_stream_handler.c */; };
+		81F7C304229D248D00048C27 /* ms_server_handler.c in Sources */ = {isa = PBXBuildFile; fileRef = 81F7C2F6229D248C00048C27 /* ms_server_handler.c */; };
+		81F7C305229D248D00048C27 /* ms_session_manager.c in Sources */ = {isa = PBXBuildFile; fileRef = 81F7C2F7229D248D00048C27 /* ms_session_manager.c */; };
+		81F7C306229D248D00048C27 /* ms_task_manager.c in Sources */ = {isa = PBXBuildFile; fileRef = 81F7C2F8229D248D00048C27 /* ms_task_manager.c */; };
+		81F7C307229D248D00048C27 /* ms_session_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 81F7C2F9229D248D00048C27 /* ms_session_manager.h */; };
+		81F7C308229D248D00048C27 /* ms_stream_handler.h in Headers */ = {isa = PBXBuildFile; fileRef = 81F7C2FA229D248D00048C27 /* ms_stream_handler.h */; };
+		81F7C309229D248D00048C27 /* ms_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 81F7C2FB229D248D00048C27 /* ms_common.c */; };
+		81F7C30A229D248D00048C27 /* ms_preloader_manager.c in Sources */ = {isa = PBXBuildFile; fileRef = 81F7C2FC229D248D00048C27 /* ms_preloader_manager.c */; };
+		81F7C30B229D248D00048C27 /* ms_preloader.c in Sources */ = {isa = PBXBuildFile; fileRef = 81F7C2FD229D248D00048C27 /* ms_preloader.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +61,20 @@
 		815CC05B224DF91D009EE3AC /* ms_server.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = ms_server.h; sourceTree = "<group>"; tabWidth = 2; };
 		815CC05C224DF91D009EE3AC /* ms_mem_storage.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_mem_storage.c; sourceTree = "<group>"; tabWidth = 2; };
 		815CC05D224DF91D009EE3AC /* ms_file_storage.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_file_storage.c; sourceTree = "<group>"; tabWidth = 2; };
+		81F7C2F0229D248C00048C27 /* ms_preloader_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_preloader_manager.h; sourceTree = "<group>"; };
+		81F7C2F1229D248C00048C27 /* ms_task_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_task_manager.h; sourceTree = "<group>"; };
+		81F7C2F2229D248C00048C27 /* ms_server_handler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_server_handler.h; sourceTree = "<group>"; };
+		81F7C2F3229D248C00048C27 /* ms_preloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_preloader.h; sourceTree = "<group>"; };
+		81F7C2F4229D248C00048C27 /* ms_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_common.h; sourceTree = "<group>"; };
+		81F7C2F5229D248C00048C27 /* ms_stream_handler.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_stream_handler.c; sourceTree = "<group>"; };
+		81F7C2F6229D248C00048C27 /* ms_server_handler.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_server_handler.c; sourceTree = "<group>"; };
+		81F7C2F7229D248D00048C27 /* ms_session_manager.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_session_manager.c; sourceTree = "<group>"; };
+		81F7C2F8229D248D00048C27 /* ms_task_manager.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_task_manager.c; sourceTree = "<group>"; };
+		81F7C2F9229D248D00048C27 /* ms_session_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_session_manager.h; sourceTree = "<group>"; };
+		81F7C2FA229D248D00048C27 /* ms_stream_handler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_stream_handler.h; sourceTree = "<group>"; };
+		81F7C2FB229D248D00048C27 /* ms_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_common.c; sourceTree = "<group>"; };
+		81F7C2FC229D248D00048C27 /* ms_preloader_manager.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_preloader_manager.c; sourceTree = "<group>"; };
+		81F7C2FD229D248D00048C27 /* ms_preloader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_preloader.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +128,8 @@
 			isa = PBXGroup;
 			children = (
 				815CC059224DF91D009EE3AC /* mongoose.c */,
+				81F7C2FB229D248D00048C27 /* ms_common.c */,
+				81F7C2F4229D248C00048C27 /* ms_common.h */,
 				815CC05D224DF91D009EE3AC /* ms_file_storage.c */,
 				815CC053224DF91D009EE3AC /* ms_file_storage.h */,
 				815CC057224DF91D009EE3AC /* ms_http_pipe.c */,
@@ -108,10 +138,22 @@
 				815CC055224DF91D009EE3AC /* ms_mem_storage.h */,
 				815CC056224DF91D009EE3AC /* ms_memory_pool.c */,
 				815CC050224DF91D009EE3AC /* ms_memory_pool.h */,
+				81F7C2FC229D248D00048C27 /* ms_preloader_manager.c */,
+				81F7C2F0229D248C00048C27 /* ms_preloader_manager.h */,
+				81F7C2FD229D248D00048C27 /* ms_preloader.c */,
+				81F7C2F3229D248C00048C27 /* ms_preloader.h */,
+				81F7C2F6229D248C00048C27 /* ms_server_handler.c */,
+				81F7C2F2229D248C00048C27 /* ms_server_handler.h */,
 				815CC054224DF91D009EE3AC /* ms_server.c */,
 				815CC05B224DF91D009EE3AC /* ms_server.h */,
+				81F7C2F7229D248D00048C27 /* ms_session_manager.c */,
+				81F7C2F9229D248D00048C27 /* ms_session_manager.h */,
 				815CC058224DF91D009EE3AC /* ms_session.c */,
 				815CC051224DF91D009EE3AC /* ms_session.h */,
+				81F7C2F5229D248C00048C27 /* ms_stream_handler.c */,
+				81F7C2FA229D248D00048C27 /* ms_stream_handler.h */,
+				81F7C2F8229D248D00048C27 /* ms_task_manager.c */,
+				81F7C2F1229D248C00048C27 /* ms_task_manager.h */,
 				815CC05A224DF91D009EE3AC /* ms_task.c */,
 				815CC052224DF91D009EE3AC /* ms_task.h */,
 			);
@@ -127,15 +169,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				815CC05F224DF91E009EE3AC /* ms_memory_pool.h in Headers */,
+				81F7C301229D248D00048C27 /* ms_preloader.h in Headers */,
 				815CC05E224DF91E009EE3AC /* ms_http_pipe.h in Headers */,
 				815CC062224DF91E009EE3AC /* ms_file_storage.h in Headers */,
+				81F7C302229D248D00048C27 /* ms_common.h in Headers */,
+				81F7C2FE229D248D00048C27 /* ms_preloader_manager.h in Headers */,
 				815CC04D224DF912009EE3AC /* queue.h in Headers */,
+				81F7C307229D248D00048C27 /* ms_session_manager.h in Headers */,
 				815CC060224DF91E009EE3AC /* ms_session.h in Headers */,
 				815CC061224DF91E009EE3AC /* ms_task.h in Headers */,
 				815CC04C224DF912009EE3AC /* ms.h in Headers */,
 				815CC06A224DF91E009EE3AC /* ms_server.h in Headers */,
 				815CC064224DF91E009EE3AC /* ms_mem_storage.h in Headers */,
+				81F7C300229D248D00048C27 /* ms_server_handler.h in Headers */,
 				815CC04B224DF912009EE3AC /* mongoose.h in Headers */,
+				81F7C308229D248D00048C27 /* ms_stream_handler.h in Headers */,
+				81F7C2FF229D248D00048C27 /* ms_task_manager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -197,11 +246,18 @@
 			files = (
 				815CC067224DF91E009EE3AC /* ms_session.c in Sources */,
 				815CC066224DF91E009EE3AC /* ms_http_pipe.c in Sources */,
+				81F7C306229D248D00048C27 /* ms_task_manager.c in Sources */,
+				81F7C303229D248D00048C27 /* ms_stream_handler.c in Sources */,
 				815CC069224DF91E009EE3AC /* ms_task.c in Sources */,
 				815CC068224DF91E009EE3AC /* mongoose.c in Sources */,
+				81F7C30A229D248D00048C27 /* ms_preloader_manager.c in Sources */,
+				81F7C304229D248D00048C27 /* ms_server_handler.c in Sources */,
+				81F7C305229D248D00048C27 /* ms_session_manager.c in Sources */,
 				815CC06B224DF91E009EE3AC /* ms_mem_storage.c in Sources */,
 				815CC06C224DF91E009EE3AC /* ms_file_storage.c in Sources */,
 				815CC065224DF91E009EE3AC /* ms_memory_pool.c in Sources */,
+				81F7C30B229D248D00048C27 /* ms_preloader.c in Sources */,
+				81F7C309229D248D00048C27 /* ms_common.c in Sources */,
 				815CC063224DF91E009EE3AC /* ms_server.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

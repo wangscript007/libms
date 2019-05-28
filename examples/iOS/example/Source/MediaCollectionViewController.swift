@@ -2,21 +2,68 @@
 //  MediaCollectionViewController.swift
 //  example
 //
-//  Created by Jianguo Wu on 2019/2/18.
-//  Copyright © 2019 libms. All rights reserved.
+//  Created by Jianguo Wu on 2019/5/28.
+//  Copyright © 2019 wujianguo. All rights reserved.
 //
 
 import UIKit
-import AVKit
+
+
+class MediaCollectionViewCell: UICollectionViewCell {
+    
+    static let identifier = "MediaCollectionViewCellIdentifier"
+    
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setup()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    var item: MediaItem! = nil {
+        didSet {
+            update()
+        }
+    }
+    
+    
+    lazy var imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    func setup() {
+        contentView.addSubview(imageView)
+        contentView.addConstraint(NSLayoutConstraint(item: imageView, attribute: .top, relatedBy: .equal, toItem: contentView, attribute: .top, multiplier: 1, constant: 0))
+        contentView.addConstraint(NSLayoutConstraint(item: imageView, attribute: .left, relatedBy: .equal, toItem: contentView, attribute: .left, multiplier: 1, constant: 0))
+        contentView.addConstraint(NSLayoutConstraint(item: imageView, attribute: .right, relatedBy: .equal, toItem: contentView, attribute: .right, multiplier: 1, constant: 0))
+        contentView.addConstraint(NSLayoutConstraint(item: imageView, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottom, multiplier: 1, constant: 0))
+    }
+    
+    func update() {
+        imageView.setImage(url: item.cover)
+    }
+    
+}
+
 
 class MediaCollectionViewController: UICollectionViewController {
 
     var items = [MediaItem]()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.collectionView!.register(MediaCollectionViewCell.self, forCellWithReuseIdentifier: MediaCollectionViewCell.identifier)
-
+        self.loadData()
+    }
+    
+    func loadData() {
         let url = URL(string: "https://raw.githubusercontent.com/wujianguo/libms/master/examples/videos.json")!
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             guard let data = data else {
@@ -32,22 +79,20 @@ class MediaCollectionViewController: UICollectionViewController {
         }
         task.resume()
     }
-    
-    // MARK: - Player
-//    lazy var playerController: AVPlayerViewController = {
-//        let controller = AVPlayerViewController()
-//        return controller
-//    }()
 
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
+        if let vc = segue.destination as? MediaPlayerViewController {
+            vc.items = items
+            if let indexPath = sender as? IndexPath {
+                vc.index = indexPath.row
+            }
+        }
     }
-    */
+    
 
     // MARK: UICollectionViewDataSource
 
@@ -66,23 +111,11 @@ class MediaCollectionViewController: UICollectionViewController {
     }
 
     // MARK: UICollectionViewDelegate
-
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let vc = AVPlayerViewController()
-        let item = items[indexPath.row]
-        let c_url = item.url.absoluteString.cString(using: .utf8)
-        let c_path = item.url.lastPathComponent.cString(using: .utf8)
-        var in_param = ms_url_param(url: c_url, path: c_path)
-
-        let out_url = UnsafeMutablePointer<Int8>.allocate(capacity: 1024*1024)
-        ms_generate_url(&in_param, out_url, 1024*1024)
-        let proxy_url = String(cString: out_url)
-//        let proxy_url = "http://127.0.0.1:8000/wildo.mp4"
-        vc.player = AVPlayer(url: URL(string: proxy_url)!)
-        vc.player?.play()
-        present(vc, animated: true, completion: nil)
-    }
     
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "MediaPlayerSegueIdentifier", sender: indexPath)
+    }
+
     /*
     // Uncomment this method to specify if the specified item should be highlighted during tracking
     override func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
@@ -112,8 +145,4 @@ class MediaCollectionViewController: UICollectionViewController {
     }
     */
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        UICollectionViewFlowLayout
-        return CGSize(width: 120, height: 10)
-    }
 }

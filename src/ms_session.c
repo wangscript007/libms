@@ -94,11 +94,11 @@ static size_t try_transfer_data(struct ms_session *session) {
     size = session->task->get_estimate_size(session->task);
   }
 
-  if (size > 0 && read_from + wanted > size) {
+  if (size > 0 && read_from + (int64_t)wanted > size) {
     wanted = size - read_from;
   }
   
-  MS_ASSERT(session->reader.req_len == 0 || read_from + wanted <= session->reader.req_pos + session->reader.req_len);
+  MS_ASSERT(session->reader.req_len == 0 || read_from + (int64_t)wanted <= session->reader.req_pos + session->reader.req_len);
   size_t read = session->task->read(session->task, session->buf.buf + session->buf.len, read_from, wanted);
   check_buf(session, session->buf.buf + session->buf.len, read_from, read);
   session->buf.len += read;
@@ -114,7 +114,7 @@ static size_t try_transfer_data(struct ms_session *session) {
   }
   mg_send(session->connection, session->buf.buf, (int)len);
   check_buf(session, session->buf.buf, session->reader.pos + session->reader.sending, len);
-  MS_ASSERT(session->reader.req_len == 0 || session->reader.pos + session->reader.sending + len <= session->reader.req_pos + session->reader.req_len);
+  MS_ASSERT(session->reader.req_len == 0 || session->reader.pos + (int64_t)session->reader.sending + (int64_t)len <= session->reader.req_pos + session->reader.req_len);
   
 //  MS_DBG("session:%p %x,%x,%x,%x,%x, send %lld, %zu, read:%zu, send_mbuf:%zu",session, session->buf.buf[0], session->buf.buf[1], session->buf.buf[2], session->buf.buf[3], session->buf.buf[4], read_from, len, read, session->connection->send_mbuf.len);
   
@@ -136,7 +136,7 @@ static void on_send(struct ms_ireader *reader, int num_sent_bytes) {
   }
   int body_len = num_sent_bytes;
   if (session->reader.header_sending > 0) {
-    if (session->reader.header_sending > num_sent_bytes) {
+    if ((int)session->reader.header_sending > num_sent_bytes) {
       MS_DBG("session:%p header_sending:%zu, len:%d", session, session->reader.header_sending, body_len);
       session->reader.header_sending -= num_sent_bytes;
       body_len = 0;

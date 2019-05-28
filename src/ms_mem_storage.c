@@ -38,12 +38,8 @@ static int bit_num(uint64_t filesize) {
   return ceil(1.0 * ceil(1.0 * filesize / MS_PIECE_UNIT_SIZE) / 4);
 }
 
+/*
 static void print_bitfield(struct ms_istorage *st) {
-  /*
-   *
-   *
-   *
-   */
   MS_ASSERT(MS_PIECE_NUM_OF_PER_BLOCK % 4 == 0);
   struct ms_mem_storage *mem_st = cast_from(st);
 
@@ -111,7 +107,7 @@ static void print_bitfield(struct ms_istorage *st) {
   MS_DBG("mem_st:%p %s", mem_st, bitmap);
   MS_FREE(bitmap);
 }
-
+*/
 static char *get_bitmap(struct ms_istorage *st) {
   struct ms_mem_storage *mem_st = cast_from(st);
   if (st->get_filesize(st) == 0) {
@@ -245,11 +241,11 @@ static int64_t get_completed_size(struct ms_istorage *st) {
 }
 
 static int64_t max_cache_len(struct ms_istorage *st) {
-  return 30*1024*1024;
+  return 20*1024*1024;
 }
 
 static int64_t max_cache_left(struct ms_istorage *st) {
-  return 2*1024*1024;
+  return 10*1024*1024;
 }
 
 static int64_t hold_head_size(struct ms_istorage *st) {
@@ -310,7 +306,7 @@ static size_t piece_len(struct ms_istorage *st, int index_for_block, int index_f
 
 static void clear_buffer_for(struct ms_istorage *st, int64_t pos, size_t len, int64_t *hold_pos, int hold_pos_len) {
   struct ms_mem_storage *mem_st = cast_from(st);
-  if (mem_st->completed_size + len <= hold_size(st, hold_pos_len)) {
+  if (mem_st->completed_size + (int64_t)len <= hold_size(st, hold_pos_len)) {
     return;
   }
   
@@ -428,8 +424,8 @@ static void cached_from(struct ms_istorage *st, int64_t from, int64_t *pos, int6
 static size_t storage_write(struct ms_istorage *st, const char *buf, int64_t pos, size_t len) {
   struct ms_mem_storage *mem_st = cast_from(st);
   MS_ASSERT(pos % MS_PIECE_UNIT_SIZE == 0);
-  MS_ASSERT(pos + len == mem_st->estimate_size || len % MS_PIECE_UNIT_SIZE == 0);
-  if (pos + len == mem_st->estimate_size) {
+  MS_ASSERT(pos + (int64_t)len == mem_st->estimate_size || len % MS_PIECE_UNIT_SIZE == 0);
+  if (pos + (int64_t)len == mem_st->estimate_size) {
     MS_DBG("complete");
   }
   size_t write = 0;
@@ -474,7 +470,7 @@ static size_t storage_write(struct ms_istorage *st, const char *buf, int64_t pos
 static size_t storage_read(struct ms_istorage *st, char *buf, int64_t pos, size_t len) {
   struct ms_mem_storage *mem_st = cast_from(st);
   MS_ASSERT(pos >= 0);
-  MS_ASSERT(mem_st->estimate_size == 0 || pos + len <= mem_st->estimate_size);
+  MS_ASSERT(mem_st->estimate_size == 0 || pos + (int64_t)len <= mem_st->estimate_size);
   if (mem_st->estimate_size == 0 && mem_st->filesize == 0) {
     return 0;
   }

@@ -28,7 +28,7 @@ struct ms_ct_file {
   int     url_len;
   char    *url;
   int64_t filesize;
-  int64_t downloadsize;
+  int64_t completed_size;
   int     block_unit_size; // MS_BLOCK_UNIT_SIZE
   char    *block_bitmap;   // ceil(1.0 * filesize / block_unit_size)
   int     *physical_indexes; // ceil(1.0 * filesize / block_unit_size)
@@ -40,9 +40,10 @@ struct ms_ct_file {
 struct ms_file_storage {
   struct ms_istorage st;
   int64_t filesize;
+  int64_t completed_size;
   int     fd;
   
-  struct ms_mem_storage *mem_st;
+//  struct ms_mem_storage *mem_st;
   struct ms_ct_file     *ct_file;
 };
 

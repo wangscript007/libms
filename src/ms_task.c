@@ -330,7 +330,7 @@ static int dispatch_pipe(struct ms_task *task, struct ms_ipipe *pipe) {
     return 1;
   }
   
-  if (reader->pos + reader->sending + task->storage->max_cache_len(task->storage) <= pipe->get_current_pos(pipe)) {
+  if (reader->pos + (int64_t)reader->sending + task->storage->max_cache_len(task->storage) <= pipe->get_current_pos(pipe)) {
 //  if (reader->pos + reader->sending + max_len_from(reader) <= pipe->get_current_pos(pipe)) {
     QUEUE_REMOVE(&pipe->node);
     MS_DBG("task:%p, pipe:%p", task, pipe);
@@ -341,7 +341,7 @@ static int dispatch_pipe(struct ms_task *task, struct ms_ipipe *pipe) {
 
   if (pipe->get_current_pos(pipe) > 0) {
     struct ms_ipipe *near_pipe = nearest_pipe(task, pipe->get_current_pos(pipe) - 1, -1);
-    if (near_pipe && reader->pos + reader->sending <= near_pipe->get_current_pos(near_pipe)) {
+    if (near_pipe && reader->pos + (int64_t)reader->sending <= near_pipe->get_current_pos(near_pipe)) {
       QUEUE_REMOVE(&pipe->node);
       MS_DBG("task:%p, pipe:%p", task, pipe);
       pipe->close(pipe);

@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  example
 //
-//  Created by Jianguo Wu on 2019/3/29.
+//  Created by Jianguo Wu on 2019/5/28.
 //  Copyright © 2019 wujianguo. All rights reserved.
 //
 
@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        ms_asnyc_start()
+        MediaServer.start()
         return true
     }
 
