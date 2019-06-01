@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Rp1-td-0Pl">
-    <device id="retina6_1" orientation="portrait">
+    <device id="retina6_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -18,15 +18,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="ibH-LO-ybN">
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="8" minimumInteritemSpacing="8" id="ibH-LO-ybN">
                             <size key="itemSize" width="172" height="135"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            <inset key="sectionInset" minX="8" minY="8" maxX="8" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="MediaCollectionViewCellIdentifier" id="ipu-V5-6Yb" customClass="MediaCollectionViewCell" customModule="example" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="172" height="135"/>
+                                <rect key="frame" x="8" y="8" width="172" height="135"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
                                     <rect key="frame" x="0.0" y="0.0" width="172" height="135"/>
@@ -57,9 +57,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HSO-Lu-6ta">
-                                <rect key="frame" x="0.0" y="88" width="414" height="414"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="310.66666666666669"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="HSO-Lu-6ta" secondAttribute="height" id="klB-4v-1XO"/>
+                                    <constraint firstAttribute="width" secondItem="HSO-Lu-6ta" secondAttribute="height" multiplier="4/3" id="klB-4v-1XO"/>
                                 </constraints>
                                 <connections>
                                     <segue destination="bX3-JS-TLm" kind="embed" id="VDK-ka-N9l"/>
@@ -71,6 +71,12 @@
                                     <barButtonItem systemItem="rewind" id="0uo-ln-G5K">
                                         <connections>
                                             <action selector="didClickPreviousBarButton:" destination="Hsf-yi-rXA" id="Abg-my-jAe"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="l9G-We-3lv"/>
+                                    <barButtonItem title="load next" id="Zd8-BI-neg">
+                                        <connections>
+                                            <action selector="didClickLoadNextBarButton:" destination="Hsf-yi-rXA" id="gGA-pI-cMA"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="kkT-5z-rXO"/>
@@ -85,13 +91,35 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="LyY-Wm-jV2" firstAttribute="trailing" secondItem="HSO-Lu-6ta" secondAttribute="trailing" id="5D5-9x-8h5"/>
+                            <constraint firstItem="HSO-Lu-6ta" firstAttribute="bottom" secondItem="LyY-Wm-jV2" secondAttribute="top" id="Bj1-zc-ZEf"/>
                             <constraint firstItem="LyY-Wm-jV2" firstAttribute="bottom" secondItem="j3V-h0-NFG" secondAttribute="bottom" id="Fow-sm-JiK"/>
                             <constraint firstItem="LyY-Wm-jV2" firstAttribute="leading" secondItem="HSO-Lu-6ta" secondAttribute="leading" id="KEa-sn-a1d"/>
                             <constraint firstItem="HSO-Lu-6ta" firstAttribute="leading" secondItem="73h-7m-A5u" secondAttribute="leading" id="VGA-1D-6re"/>
                             <constraint firstItem="HSO-Lu-6ta" firstAttribute="top" secondItem="j3V-h0-NFG" secondAttribute="top" id="XNh-Fd-aDd"/>
                             <constraint firstAttribute="trailing" secondItem="HSO-Lu-6ta" secondAttribute="trailing" id="t5f-q7-U2i"/>
+                            <constraint firstItem="j3V-h0-NFG" firstAttribute="leading" secondItem="HSO-Lu-6ta" secondAttribute="leading" id="t88-ci-O7i"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="j3V-h0-NFG"/>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="Bj1-zc-ZEf"/>
+                                <exclude reference="VGA-1D-6re"/>
+                                <exclude reference="t5f-q7-U2i"/>
+                                <exclude reference="t88-ci-O7i"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=compact">
+                            <mask key="constraints">
+                                <include reference="Bj1-zc-ZEf"/>
+                                <include reference="t88-ci-O7i"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular">
+                            <mask key="constraints">
+                                <include reference="VGA-1D-6re"/>
+                                <include reference="t5f-q7-U2i"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
                         <outlet property="nextBarButton" destination="Cel-Aa-XZM" id="yXg-Gn-F9e"/>
@@ -125,7 +153,7 @@
             <objects>
                 <viewController id="bX3-JS-TLm" customClass="AVPlayerViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Ql5-1U-ahX">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="414"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="310.66666666666669"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="wN1-y6-h8q"/>

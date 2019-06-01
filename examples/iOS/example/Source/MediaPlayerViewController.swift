@@ -13,8 +13,14 @@ class MediaPlayerViewController: UIViewController {
 
     var items = [MediaItem]()
     var index = 0
+    var currentPlayResource: MediaServer.MediaResource? = nil
+    var preloadResource: MediaServer.MediaResource? = nil
     
     var playerViewController: AVPlayerViewController!
+    
+    deinit {
+        stopPreloadTask()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,18 +28,38 @@ class MediaPlayerViewController: UIViewController {
         updateToolBarStatus()
     }
     
+    // MARK: - Player
+
+    func play() {
+        stopPreloadTask()
+        let item = items[index]
+        title = item.name
+        currentPlayResource = MediaServer.generateResource(url: item.url)
+        let player = AVPlayer(url: currentPlayResource!.playURL)
+        playerViewController.player = player
+        player.play()        
+    }
+    
+    func stopPreloadTask() {
+        guard let preloadResource = preloadResource else {
+            return
+        }
+        
+        MediaServer.stopTask(resource: preloadResource)
+        self.preloadResource = nil
+    }
+
+    // MARK: - Status
+//    @IBOutlet weak var statusLabel: UILabel!
+    
+    
+    // MARK: - ToolBar
+    
     func updateToolBarStatus() {
         previousBarButton.isEnabled = index > 0
         nextBarButton.isEnabled = index < items.count - 1
     }
     
-    func play() {
-        let item = items[index]
-        title = item.name
-        let url = MediaServer.generateURL(url: item.url)
-        playerViewController.player = AVPlayer(url: url)
-        playerViewController.player?.play()
-    }
     
     // MARK: - Actions
     
@@ -43,25 +69,36 @@ class MediaPlayerViewController: UIViewController {
     
     
     @IBAction func didClickPreviousBarButton(_ sender: UIBarButtonItem) {
-        guard index > 0 else {
+        defer {
             updateToolBarStatus()
+        }
+        guard index > 0 else {
             return
         }
         index -= 1
         play()
-        updateToolBarStatus()
     }
     
     @IBAction func didClickNextBarButton(_ sender: UIBarButtonItem) {
-        guard index < items.count - 1 else {
+        defer {
             updateToolBarStatus()
+        }
+        guard index < items.count - 1 else {
             return
         }
         index += 1
         play()
-        updateToolBarStatus()
     }
     
+    @IBAction func didClickLoadNextBarButton(_ sender: UIBarButtonItem) {
+        guard index < items.count - 1 else {
+            return
+        }
+        stopPreloadTask()
+        let resource = MediaServer.generateResource(url: items[index+1].url)
+        MediaServer.startTask(resource: resource)
+        preloadResource = resource
+    }
     
     // MARK: - Navigation
 

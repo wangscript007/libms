@@ -19,6 +19,12 @@ static int is_equal(const struct mg_str *s1, const struct mg_str *s2) {
   return s1->len == s2->len && memcmp(s1->p, s2->p, s2->len) == 0;
 }
 
+static void response_empty(struct mg_connection *nc, int status_code) {
+  char json[] = "{}";
+  int resp_len = (int)strlen(json);
+  mg_send_head(nc, status_code, resp_len, "Content-Type: application/json\r\nConnection: keep-alive");
+  mg_send(nc, json, resp_len);
+}
 
 static void fill_pipe_json(char *json, int len, struct ms_ipipe *pipe) {
   snprintf(json + strlen(json), len - strlen(json), "{");
@@ -124,7 +130,7 @@ static void get_task_list_handler(struct mg_connection *nc, int ev, void *p) {
   
   MS_FREE(response);
 }
-
+/*
 static void get_task_handler(struct mg_connection *nc, int ev, void *p) {
   if (ev != MG_EV_HTTP_REQUEST) {
     return;
@@ -151,40 +157,39 @@ static void get_task_handler(struct mg_connection *nc, int ev, void *p) {
   
   mg_http_send_error(nc, 404, "not found");
 }
-
-static void preload_handler(struct mg_connection *nc, int ev, void *p) {
+*/
+static void task_handler(struct mg_connection *nc, int ev, void *p, int resource_id) {
   struct ms_server *server = nc->user_data;
   if (ev == MG_EV_HTTP_REQUEST) {
     struct http_message *hm = (struct http_message *)p;
     if (mg_strcmp(hm->method, mg_mk_str("GET")) == 0) {
-      
+      return get_task_list_handler(nc, ev, p);
     } else if (mg_strcmp(hm->method, mg_mk_str("POST")) == 0) {
-      char url[MG_MAX_HTTP_REQUEST_SIZE] = {0};
-      mg_get_http_var(&hm->body, "url", url, MG_MAX_HTTP_REQUEST_SIZE);
-      MS_DBG("%s", url);
-      
-      struct ms_task *task = ms_find_or_create_task(url, server);
-      struct ms_preloader *preloader = ms_preloader_open(&task->task, 30*1024*1024);
+      char resource_id_str[64] = {0};
+      mg_get_http_var(&hm->body, "resourceId", resource_id_str, 64);
+      struct ms_resource *resource = ms_find_resource_by_id(atoi(resource_id_str));
+      struct ms_task *task = ms_find_or_create_task(resource->origin_url.p, server);
+      struct ms_preloader *preloader = ms_preloader_open(&task->task, 10*1024*1024);
       QUEUE_INSERT_TAIL(&server->preloaders, &preloader->node);
       task->task.add_reader(&task->task, (struct ms_ireader *)preloader);
+      response_empty(nc, 200);
     } else if (mg_strcmp(hm->method, mg_mk_str("DELETE")) == 0) {
-      char url[MG_MAX_HTTP_REQUEST_SIZE] = {0};
-      mg_get_http_var(&hm->body, "url", url, MG_MAX_HTTP_REQUEST_SIZE);
-      MS_DBG("%s", url);
-      
+      struct ms_resource *resource = ms_find_resource_by_id(resource_id);
       QUEUE *q;
       struct ms_preloader *preloader = NULL;
       QUEUE_FOREACH(q, &ms_default_server()->preloaders) {
         preloader = QUEUE_DATA(q, struct ms_preloader, node);
         struct ms_task *task = (struct ms_task *)preloader->task;
-        if (mg_vcmp(&task->url, url) == 0) {
+        if (mg_strcmp(task->url, resource->origin_url) == 0) {
           preloader->task->remove_reader(preloader->task, &preloader->reader);
           QUEUE_REMOVE(&preloader->node);
           ms_preloader_close(preloader);
+          response_empty(nc, 200);
+          return;
         }
       }
+      response_empty(nc, 404);
     }
-    
   }
 }
 
@@ -192,14 +197,12 @@ void ms_api_handler(struct mg_connection *nc, int ev, void *p) {
   struct ms_server *server = nc->user_data;
   if (ev == MG_EV_HTTP_REQUEST) {
     static const struct mg_str api_tasks = MG_MK_STR("/api/tasks");
-    static const struct mg_str api_preload = MG_MK_STR("/api/preload");
     struct http_message *hm = (struct http_message *)p;
-    if (is_equal(&hm->uri, &api_tasks)) {
-      return get_task_list_handler(nc, ev, p);
-    } else if (has_prefix(&hm->uri, &api_tasks)) {
-      return get_task_handler(nc, ev, p);
-    } else if (has_prefix(&hm->uri, &api_preload)) {
-      return preload_handler(nc, ev, p);
+    if (has_prefix(&hm->uri, &api_tasks)) {
+      struct mg_str uri = mg_strdup_nul(hm->uri);
+      task_handler(nc, ev, p, atoi(uri.p+api_tasks.len+1));
+    } else if (is_equal(&hm->uri, &api_tasks)) {
+      task_handler(nc, ev, p, -1);
     } else {
       mg_serve_http(nc, hm, server->opts);
     }

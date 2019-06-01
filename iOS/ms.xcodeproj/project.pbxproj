@@ -61,20 +61,20 @@
 		815CC05B224DF91D009EE3AC /* ms_server.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = ms_server.h; sourceTree = "<group>"; tabWidth = 2; };
 		815CC05C224DF91D009EE3AC /* ms_mem_storage.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_mem_storage.c; sourceTree = "<group>"; tabWidth = 2; };
 		815CC05D224DF91D009EE3AC /* ms_file_storage.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_file_storage.c; sourceTree = "<group>"; tabWidth = 2; };
-		81F7C2F0229D248C00048C27 /* ms_preloader_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_preloader_manager.h; sourceTree = "<group>"; };
-		81F7C2F1229D248C00048C27 /* ms_task_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_task_manager.h; sourceTree = "<group>"; };
-		81F7C2F2229D248C00048C27 /* ms_server_handler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_server_handler.h; sourceTree = "<group>"; };
-		81F7C2F3229D248C00048C27 /* ms_preloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_preloader.h; sourceTree = "<group>"; };
-		81F7C2F4229D248C00048C27 /* ms_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_common.h; sourceTree = "<group>"; };
-		81F7C2F5229D248C00048C27 /* ms_stream_handler.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_stream_handler.c; sourceTree = "<group>"; };
-		81F7C2F6229D248C00048C27 /* ms_server_handler.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_server_handler.c; sourceTree = "<group>"; };
-		81F7C2F7229D248D00048C27 /* ms_session_manager.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_session_manager.c; sourceTree = "<group>"; };
-		81F7C2F8229D248D00048C27 /* ms_task_manager.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_task_manager.c; sourceTree = "<group>"; };
-		81F7C2F9229D248D00048C27 /* ms_session_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_session_manager.h; sourceTree = "<group>"; };
-		81F7C2FA229D248D00048C27 /* ms_stream_handler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_stream_handler.h; sourceTree = "<group>"; };
-		81F7C2FB229D248D00048C27 /* ms_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_common.c; sourceTree = "<group>"; };
-		81F7C2FC229D248D00048C27 /* ms_preloader_manager.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_preloader_manager.c; sourceTree = "<group>"; };
-		81F7C2FD229D248D00048C27 /* ms_preloader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_preloader.c; sourceTree = "<group>"; };
+		81F7C2F0229D248C00048C27 /* ms_preloader_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = ms_preloader_manager.h; sourceTree = "<group>"; tabWidth = 2; };
+		81F7C2F1229D248C00048C27 /* ms_task_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = ms_task_manager.h; sourceTree = "<group>"; tabWidth = 2; };
+		81F7C2F2229D248C00048C27 /* ms_server_handler.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = ms_server_handler.h; sourceTree = "<group>"; tabWidth = 2; };
+		81F7C2F3229D248C00048C27 /* ms_preloader.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = ms_preloader.h; sourceTree = "<group>"; tabWidth = 2; };
+		81F7C2F4229D248C00048C27 /* ms_common.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = ms_common.h; sourceTree = "<group>"; tabWidth = 2; };
+		81F7C2F5229D248C00048C27 /* ms_stream_handler.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_stream_handler.c; sourceTree = "<group>"; tabWidth = 2; };
+		81F7C2F6229D248C00048C27 /* ms_server_handler.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_server_handler.c; sourceTree = "<group>"; tabWidth = 2; };
+		81F7C2F7229D248D00048C27 /* ms_session_manager.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_session_manager.c; sourceTree = "<group>"; tabWidth = 2; };
+		81F7C2F8229D248D00048C27 /* ms_task_manager.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_task_manager.c; sourceTree = "<group>"; tabWidth = 2; };
+		81F7C2F9229D248D00048C27 /* ms_session_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = ms_session_manager.h; sourceTree = "<group>"; tabWidth = 2; };
+		81F7C2FA229D248D00048C27 /* ms_stream_handler.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = ms_stream_handler.h; sourceTree = "<group>"; tabWidth = 2; };
+		81F7C2FB229D248D00048C27 /* ms_common.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_common.c; sourceTree = "<group>"; tabWidth = 2; };
+		81F7C2FC229D248D00048C27 /* ms_preloader_manager.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_preloader_manager.c; sourceTree = "<group>"; tabWidth = 2; };
+		81F7C2FD229D248D00048C27 /* ms_preloader.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_preloader.c; sourceTree = "<group>"; tabWidth = 2; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */

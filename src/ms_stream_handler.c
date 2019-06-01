@@ -20,6 +20,12 @@ void ms_stream_handler(struct mg_connection *nc, int ev, void *p) {
     MS_ASSERT(mg_strcmp(hm->method, mg_mk_str("GET")) == 0 || mg_strcmp(hm->method, mg_mk_str("HEAD")) == 0);
     char url[MG_MAX_HTTP_REQUEST_SIZE] = {0};
     mg_get_http_var(&hm->query_string, "url", url, MG_MAX_HTTP_REQUEST_SIZE);
+    if (strlen(url) == 0) {
+      struct ms_resource *resource = ms_find_resource(&hm->uri);
+      if (resource) {
+        strncpy(url, resource->origin_url.p, MG_MAX_HTTP_REQUEST_SIZE);
+      }
+    }
     MS_DBG("%s", url);
     
     int i = 0;

@@ -11,6 +11,16 @@
 
 #include "ms.h"
 
+struct ms_resource {
+  struct mg_str origin_url;
+  struct mg_str name;
+
+  int   id;
+  int   ref;
+  
+  QUEUE node;
+};
+
 struct ms_istorage {
   int64_t (*get_filesize)(struct ms_istorage *st);
   void    (*set_filesize)(struct ms_istorage *st, int64_t filesize);
@@ -154,6 +164,10 @@ enum ms_http_method
 const char * ms_http_method_str (enum ms_http_method m);
 
 enum ms_http_method ms_http_method_enum(struct mg_str str);
+
+struct ms_resource *ms_find_resource(const struct mg_str *uri);
+
+struct ms_resource *ms_find_resource_by_id(const int resource_id);
 
 #endif /* ms_server_h */
 
