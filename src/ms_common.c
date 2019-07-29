@@ -10,12 +10,23 @@
 #include "ms.h"
 #include <time.h>
 
+#define MS_VERSION_MAJOR 0
+#define MS_VERSION_MINOR 1
+#define MS_VERSION_PATCH 0
+#define MS_VERSION_IS_RELEASE 0
+#define MS_VERSION_SUFFIX "dev"
+
+#define MS_VERSION_HEX  ((MS_VERSION_MAJOR << 16) | \
+                         (MS_VERSION_MINOR <<  8) | \
+                         (MS_VERSION_PATCH))
+
+
 #define MS_STRINGIFY(v) MS_STRINGIFY_HELPER(v)
 #define MS_STRINGIFY_HELPER(v) #v
 
 #define MS_VERSION_STRING_BASE  MS_STRINGIFY(MS_VERSION_MAJOR) "." \
-MS_STRINGIFY(MS_VERSION_MINOR) "." \
-MS_STRINGIFY(MS_VERSION_PATCH)
+                                MS_STRINGIFY(MS_VERSION_MINOR) "." \
+                                MS_STRINGIFY(MS_VERSION_PATCH)
 
 #if MS_VERSION_IS_RELEASE
 # define MS_VERSION_STRING  MS_VERSION_STRING_BASE
@@ -89,4 +100,26 @@ char *ms_str_of_ev(int ev) {
   } else {
     return "unknown";
   }
+}
+
+#include <execinfo.h>
+#define BT_BUF_SIZE 100
+void ms_print_backtrace(void) {
+  int j, nptrs;
+  void *buffer[BT_BUF_SIZE];
+  char **strings;
+  
+  nptrs = backtrace(buffer, BT_BUF_SIZE);
+  
+  strings = backtrace_symbols(buffer, nptrs);
+  if (strings == NULL) {
+    perror("backtrace_symbols");
+    exit(EXIT_FAILURE);
+  }
+  
+  for (j = 0; j < nptrs; j++) {
+    perror(strings[j]);
+  }
+  
+  free(strings);
 }

@@ -59,7 +59,7 @@ static void on_server_start() {
 
 
 void run_async_tests(const char *path) {
-  ms_start("8090", path, on_server_start);
+  ms_start(8090, path, on_server_start);
 }
 
 

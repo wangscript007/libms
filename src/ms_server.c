@@ -17,11 +17,6 @@
 #include "ms_http_pipe.h"
 #include <pthread.h>
 
-enum ms_server_status {
-  ms_server_status_idle,
-  ms_server_status_starting,
-  ms_server_status_running
-};
 
 static enum ms_server_status s_server_status = ms_server_status_idle;
 
@@ -113,17 +108,26 @@ void ms_start(short http_port, const char *path, void (*callback)(void)) {
   init_media_server(&s_server);
   strcpy(s_server.path, path);
   
-  struct mg_connection *nc;
+  struct mg_connection *nc = (struct mg_connection *)0;
   
   MS_DBG("Starting web server on port %d", http_port);
-  char port[16] = {0};
-  snprintf(port, 16, "%d", http_port);
-  nc = mg_bind(&s_server.mgr, port, server_handler);
-  if (nc == NULL) {
-    MS_DBG("Failed to create listener");
+  short current_port = http_port;
+  for (; current_port < http_port + 100; ++current_port) {
+    char port[16] = {0};
+    snprintf(port, 16, "%d", current_port);
+    nc = mg_bind(&s_server.mgr, port, server_handler);
+    if (nc) {
+      MS_DBG("success bind port: %s", port);
+      break;
+    } else {
+      MS_DBG("failed bind port: %s", port);
+    }
+  }
+  if (!nc) {
     return;
   }
-  s_server.port = http_port;
+  
+  s_server.port = current_port;
   nc->user_data = &s_server;
   // Set up HTTP server parameters
   mg_set_protocol_http_websocket(nc);
@@ -159,6 +163,11 @@ static void *server_thread(void *argv) {
   MS_FREE(param);
   return NULL;
 }
+
+enum ms_server_status ms_server_current_status() {
+  return s_server_status;
+}
+
 
 void ms_asnyc_start(short http_port, const char *path) {
   if (s_server_status != ms_server_status_idle) {

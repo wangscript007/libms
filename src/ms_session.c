@@ -12,6 +12,18 @@
 //#define MS_SEND_BUF_LIMIT   (2*1024*1024)
 #define MS_SEND_BUF_LIMIT   MG_MAX_HTTP_SEND_MBUF
 
+
+static void parse_media(struct ms_session *session, const char *buf, size_t len) {
+  if (session->meta) {
+    return;
+  }
+  char m3u8_header[16] = "#EXTM3U";
+  if (memcmp(buf, m3u8_header, strlen(m3u8_header)) == 0) {
+    session->meta = (struct ms_media_meta *)MS_MALLOC(sizeof(struct ms_media_meta));
+    session->meta->type = ms_media_type_m3u8;
+  }
+}
+
 static void check_buf(struct ms_session *session, const char *buf, int64_t pos, size_t len)
 {
   // if (session->fp == 0) {
@@ -55,6 +67,20 @@ static size_t try_transfer_data(struct ms_session *session) {
   }
   if (session->task->get_filesize(session->task) == 0) {
     return 0;
+  }
+  
+  if (session->method == MS_HTTP_GET && !session->meta && session->reader.req_pos == 0) {
+    char buf[1024] = {0};
+    size_t wanted = 1024;
+    if (wanted > session->task->get_filesize(session->task)) {
+      wanted = session->task->get_filesize(session->task);
+    }
+    size_t read = session->task->read(session->task, buf, 0, wanted);
+    parse_media(session, buf, read);
+//    if (session->meta->type == ms_media_type_m3u8) {
+//      read = session->task->read(session->task, buf, 0, wanted);
+//      return 0;
+//    }
   }
   
   if (!(session->connection->flags & MS_F_HEADER_SEND)) {

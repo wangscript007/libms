@@ -20,11 +20,25 @@
 		8116BEB42255FB4B00763245 /* ms_memory_pool.c in Sources */ = {isa = PBXBuildFile; fileRef = 8116BEA52255FB4B00763245 /* ms_memory_pool.c */; };
 		8116BEB52255FB4B00763245 /* ms_http_pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 8116BEA62255FB4B00763245 /* ms_http_pipe.c */; };
 		8116BEB62255FB4B00763245 /* ms_session.c in Sources */ = {isa = PBXBuildFile; fileRef = 8116BEA72255FB4B00763245 /* ms_session.c */; };
-		8116BEB72255FB4B00763245 /* mongoose.c in Sources */ = {isa = PBXBuildFile; fileRef = 8116BEA82255FB4B00763245 /* mongoose.c */; };
+		8116BEB72255FB4B00763245 /* mongoose.c in Sources */ = {isa = PBXBuildFile; fileRef = 8116BEA82255FB4B00763245 /* mongoose.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		8116BEB82255FB4B00763245 /* ms_task.c in Sources */ = {isa = PBXBuildFile; fileRef = 8116BEA92255FB4B00763245 /* ms_task.c */; };
 		8116BEB92255FB4B00763245 /* ms_server.h in Headers */ = {isa = PBXBuildFile; fileRef = 8116BEAA2255FB4B00763245 /* ms_server.h */; };
 		8116BEBA2255FB4B00763245 /* ms_mem_storage.c in Sources */ = {isa = PBXBuildFile; fileRef = 8116BEAB2255FB4B00763245 /* ms_mem_storage.c */; };
 		8116BEBB2255FB4B00763245 /* ms_file_storage.c in Sources */ = {isa = PBXBuildFile; fileRef = 8116BEAC2255FB4B00763245 /* ms_file_storage.c */; };
+		81FDC33822EBF34E00F01956 /* ms_session_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FDC32A22EBF34C00F01956 /* ms_session_manager.h */; };
+		81FDC33922EBF34E00F01956 /* ms_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FDC32B22EBF34C00F01956 /* ms_common.h */; };
+		81FDC33A22EBF34E00F01956 /* ms_stream_handler.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FDC32C22EBF34C00F01956 /* ms_stream_handler.h */; };
+		81FDC33B22EBF34E00F01956 /* ms_preloader.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FDC32D22EBF34C00F01956 /* ms_preloader.h */; };
+		81FDC33C22EBF34E00F01956 /* ms_preloader_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FDC32E22EBF34C00F01956 /* ms_preloader_manager.h */; };
+		81FDC33D22EBF34E00F01956 /* ms_stream_handler.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FDC32F22EBF34C00F01956 /* ms_stream_handler.c */; };
+		81FDC33E22EBF34E00F01956 /* ms_server_handler.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FDC33022EBF34C00F01956 /* ms_server_handler.h */; };
+		81FDC33F22EBF34E00F01956 /* ms_session_manager.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FDC33122EBF34C00F01956 /* ms_session_manager.c */; };
+		81FDC34022EBF34E00F01956 /* ms_preloader.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FDC33222EBF34D00F01956 /* ms_preloader.c */; };
+		81FDC34122EBF34E00F01956 /* ms_server_handler.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FDC33322EBF34D00F01956 /* ms_server_handler.c */; };
+		81FDC34222EBF34E00F01956 /* ms_preloader_manager.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FDC33422EBF34D00F01956 /* ms_preloader_manager.c */; };
+		81FDC34322EBF34E00F01956 /* ms_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FDC33522EBF34D00F01956 /* ms_common.c */; };
+		81FDC34422EBF34E00F01956 /* ms_task_manager.c in Sources */ = {isa = PBXBuildFile; fileRef = 81FDC33622EBF34D00F01956 /* ms_task_manager.c */; };
+		81FDC34522EBF34E00F01956 /* ms_task_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 81FDC33722EBF34D00F01956 /* ms_task_manager.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +61,20 @@
 		8116BEAB2255FB4B00763245 /* ms_mem_storage.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_mem_storage.c; sourceTree = "<group>"; tabWidth = 2; };
 		8116BEAC2255FB4B00763245 /* ms_file_storage.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = ms_file_storage.c; sourceTree = "<group>"; tabWidth = 2; };
 		815CC02F224DF886009EE3AC /* libms.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libms.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		81FDC32A22EBF34C00F01956 /* ms_session_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_session_manager.h; sourceTree = "<group>"; };
+		81FDC32B22EBF34C00F01956 /* ms_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_common.h; sourceTree = "<group>"; };
+		81FDC32C22EBF34C00F01956 /* ms_stream_handler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_stream_handler.h; sourceTree = "<group>"; };
+		81FDC32D22EBF34C00F01956 /* ms_preloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_preloader.h; sourceTree = "<group>"; };
+		81FDC32E22EBF34C00F01956 /* ms_preloader_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_preloader_manager.h; sourceTree = "<group>"; };
+		81FDC32F22EBF34C00F01956 /* ms_stream_handler.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_stream_handler.c; sourceTree = "<group>"; };
+		81FDC33022EBF34C00F01956 /* ms_server_handler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_server_handler.h; sourceTree = "<group>"; };
+		81FDC33122EBF34C00F01956 /* ms_session_manager.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_session_manager.c; sourceTree = "<group>"; };
+		81FDC33222EBF34D00F01956 /* ms_preloader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_preloader.c; sourceTree = "<group>"; };
+		81FDC33322EBF34D00F01956 /* ms_server_handler.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_server_handler.c; sourceTree = "<group>"; };
+		81FDC33422EBF34D00F01956 /* ms_preloader_manager.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_preloader_manager.c; sourceTree = "<group>"; };
+		81FDC33522EBF34D00F01956 /* ms_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_common.c; sourceTree = "<group>"; };
+		81FDC33622EBF34D00F01956 /* ms_task_manager.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ms_task_manager.c; sourceTree = "<group>"; };
+		81FDC33722EBF34D00F01956 /* ms_task_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ms_task_manager.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +112,8 @@
 			isa = PBXGroup;
 			children = (
 				8116BEA82255FB4B00763245 /* mongoose.c */,
+				81FDC33522EBF34D00F01956 /* ms_common.c */,
+				81FDC32B22EBF34C00F01956 /* ms_common.h */,
 				8116BEAC2255FB4B00763245 /* ms_file_storage.c */,
 				8116BEA22255FB4B00763245 /* ms_file_storage.h */,
 				8116BEA62255FB4B00763245 /* ms_http_pipe.c */,
@@ -92,10 +122,22 @@
 				8116BEA42255FB4B00763245 /* ms_mem_storage.h */,
 				8116BEA52255FB4B00763245 /* ms_memory_pool.c */,
 				8116BE9F2255FB4B00763245 /* ms_memory_pool.h */,
+				81FDC33422EBF34D00F01956 /* ms_preloader_manager.c */,
+				81FDC32E22EBF34C00F01956 /* ms_preloader_manager.h */,
+				81FDC33222EBF34D00F01956 /* ms_preloader.c */,
+				81FDC32D22EBF34C00F01956 /* ms_preloader.h */,
+				81FDC33322EBF34D00F01956 /* ms_server_handler.c */,
+				81FDC33022EBF34C00F01956 /* ms_server_handler.h */,
 				8116BEA32255FB4B00763245 /* ms_server.c */,
 				8116BEAA2255FB4B00763245 /* ms_server.h */,
+				81FDC33122EBF34C00F01956 /* ms_session_manager.c */,
+				81FDC32A22EBF34C00F01956 /* ms_session_manager.h */,
 				8116BEA72255FB4B00763245 /* ms_session.c */,
 				8116BEA02255FB4B00763245 /* ms_session.h */,
+				81FDC32F22EBF34C00F01956 /* ms_stream_handler.c */,
+				81FDC32C22EBF34C00F01956 /* ms_stream_handler.h */,
+				81FDC33622EBF34D00F01956 /* ms_task_manager.c */,
+				81FDC33722EBF34D00F01956 /* ms_task_manager.h */,
 				8116BEA92255FB4B00763245 /* ms_task.c */,
 				8116BEA12255FB4B00763245 /* ms_task.h */,
 			);
@@ -127,14 +169,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				8116BEAE2255FB4B00763245 /* ms_memory_pool.h in Headers */,
+				81FDC33B22EBF34E00F01956 /* ms_preloader.h in Headers */,
+				81FDC33922EBF34E00F01956 /* ms_common.h in Headers */,
 				8116BEAD2255FB4B00763245 /* ms_http_pipe.h in Headers */,
 				8116BEB12255FB4B00763245 /* ms_file_storage.h in Headers */,
 				8116BE9C2255FB4100763245 /* queue.h in Headers */,
 				8116BEAF2255FB4B00763245 /* ms_session.h in Headers */,
+				81FDC33822EBF34E00F01956 /* ms_session_manager.h in Headers */,
 				8116BEB02255FB4B00763245 /* ms_task.h in Headers */,
 				8116BE9B2255FB4100763245 /* ms.h in Headers */,
 				8116BEB92255FB4B00763245 /* ms_server.h in Headers */,
+				81FDC33A22EBF34E00F01956 /* ms_stream_handler.h in Headers */,
+				81FDC33E22EBF34E00F01956 /* ms_server_handler.h in Headers */,
 				8116BEB32255FB4B00763245 /* ms_mem_storage.h in Headers */,
+				81FDC33C22EBF34E00F01956 /* ms_preloader_manager.h in Headers */,
+				81FDC34522EBF34E00F01956 /* ms_task_manager.h in Headers */,
 				8116BE9A2255FB4100763245 /* mongoose.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -195,11 +244,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				81FDC34222EBF34E00F01956 /* ms_preloader_manager.c in Sources */,
+				81FDC34022EBF34E00F01956 /* ms_preloader.c in Sources */,
 				8116BEB62255FB4B00763245 /* ms_session.c in Sources */,
 				8116BEB52255FB4B00763245 /* ms_http_pipe.c in Sources */,
+				81FDC33D22EBF34E00F01956 /* ms_stream_handler.c in Sources */,
+				81FDC34422EBF34E00F01956 /* ms_task_manager.c in Sources */,
 				8116BEB82255FB4B00763245 /* ms_task.c in Sources */,
+				81FDC34322EBF34E00F01956 /* ms_common.c in Sources */,
 				8116BEB72255FB4B00763245 /* mongoose.c in Sources */,
 				8116BEBA2255FB4B00763245 /* ms_mem_storage.c in Sources */,
+				81FDC34122EBF34E00F01956 /* ms_server_handler.c in Sources */,
+				81FDC33F22EBF34E00F01956 /* ms_session_manager.c in Sources */,
 				8116BEBB2255FB4B00763245 /* ms_file_storage.c in Sources */,
 				8116BEB42255FB4B00763245 /* ms_memory_pool.c in Sources */,
 				8116BEB22255FB4B00763245 /* ms_server.c in Sources */,

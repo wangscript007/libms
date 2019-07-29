@@ -39,15 +39,6 @@ char * ms_current_time_str(void);
 #define MS_ASSERT assert
 #endif
 
-#define MS_VERSION_MAJOR 0
-#define MS_VERSION_MINOR 1
-#define MS_VERSION_PATCH 0
-#define MS_VERSION_IS_RELEASE 0
-#define MS_VERSION_SUFFIX "dev"
-
-#define MS_VERSION_HEX  ((MS_VERSION_MAJOR << 16) | \
-                         (MS_VERSION_MINOR <<  8) | \
-                         (MS_VERSION_PATCH))
 
 
 unsigned int ms_version(void);
@@ -68,6 +59,13 @@ struct ms_server {
   QUEUE   resources;  
 };
 
+enum ms_server_status {
+    ms_server_status_idle,
+    ms_server_status_starting,
+    ms_server_status_running
+};
+
+
 char *ms_str_of_ev(int ev);
 
 struct ms_server *ms_default_server(void);
@@ -80,6 +78,7 @@ void ms_stop(void);
 
 void ms_asnyc_start(short http_port, const char *path);
 
+enum ms_server_status ms_server_current_status(void);
 
 struct ms_url_param {
   const char    *url;

@@ -100,18 +100,18 @@ void stop_fake_server(void) {
 
 
 void fake_url(struct ms_fake_nc *nc, char *url, int url_len) {
-    snprintf(url, url_len, "http://127.0.0.1:%s%s", ms_default_server()->port, nc->uri);
+    snprintf(url, url_len, "http://127.0.0.1:%d%s", ms_default_server()->port, nc->uri);
 }
 
 struct ms_fake_nc *nc_of(enum ms_fake_type type) {
   QUEUE *q;
-  struct ms_fake_nc *nct;
+  struct ms_fake_nc *nct = (struct ms_fake_nc *)0;
   QUEUE_FOREACH(q, &s_server.nc) {
     nct = QUEUE_DATA(q, struct ms_fake_nc, node);
     if (nct->type == type) {
-      return nct;
+      break;
     }
   }
-  abort();
-  return NULL;
+  MS_ASSERT(nct);
+  return nct;
 }

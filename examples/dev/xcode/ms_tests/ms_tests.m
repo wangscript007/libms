@@ -28,11 +28,11 @@ void ms_start(const char *http_port, const char *path, void (*callback)(void));
 - (void)testExample {
   char *path = "/Users/wujianguo/Documents/wujianguo/githublibms/";
   chdir(path);
-  ms_start("8090", path, NULL);
+//  ms_start(8090, path, NULL);
   
   test_setup();
   run_sync_tests(path);
-//  run_async_tests(path);
+  run_async_tests(path);
   test_tear_down();
 }
 

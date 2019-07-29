@@ -19,32 +19,25 @@ struct ms_ct_block {
   char  *bitmap;
 };
 
-// control file
-struct ms_ct_file {
-  int     fd;
-  
-  char    header[4];  // "lbms"
-  int     version;
-  int     url_len;
-  char    *url;
-  int64_t filesize;
-  int64_t completed_size;
-  int     block_unit_size; // MS_BLOCK_UNIT_SIZE
-  char    *block_bitmap;   // ceil(1.0 * filesize / block_unit_size)
-  int     *physical_indexes; // ceil(1.0 * filesize / block_unit_size)
-  
-  int     in_flight_block_num;
-  struct ms_ct_block  **in_flight_blocks;
-};
 
 struct ms_file_storage {
   struct ms_istorage st;
-  int64_t filesize;
-  int64_t completed_size;
+//  int64_t filesize;
+//  int64_t completed_size;
   int     fd;
   
+  char    header[4];  // "lbms", len: 4
+  int     version;    //  len: 4
+  int     url_len;    //  len: 4
+  char    *url;       //  len: url_len
+  int64_t filesize;   //  len: 8
+  int64_t completed_size;  // len: 8
+  int     block_unit_size; // MS_BLOCK_UNIT_SIZE
+  char    *block_bitmap;   // ceil(1.0 * filesize / block_unit_size)
+  int     *physical_indexes; // ceil(1.0 * filesize / block_unit_size)
+
+  
 //  struct ms_mem_storage *mem_st;
-  struct ms_ct_file     *ct_file;
 };
 
 struct ms_file_storage *ms_file_storage_open(const char *url, const char *path);

@@ -112,6 +112,58 @@ static struct file_io_callback g_callback = {
 };
 */
 
+/*
+static void read_header(struct ms_file_storage *file_st) {
+  MS_ASSERT(file_st->fd > 0);
+  struct ms_file_storage *ct = file_st;
+  char header[4] = {0};
+  pread(file_st->fd, header, 4, 0);
+
+}
+
+static void write_base_header(struct ms_file_storage *file_st) {
+  MS_ASSERT(file_st->fd > 0);
+  struct ms_file_storage *ct = file_st;
+  int header_len = 0;
+  header_len += sizeof(ct->header);
+  header_len += sizeof(ct->version);
+  header_len += sizeof(ct->url_len);
+  header_len += ct->url_len;
+  header_len += sizeof(ct->filesize);
+  header_len += sizeof(ct->completed_size);
+  header_len += sizeof(ct->block_unit_size);
+  
+  char *header = MS_MALLOC(header_len);
+  memset(header, 0, header_len);
+  memcpy(header, ct->header, sizeof(ct->header));
+  header += sizeof(ct->header);
+  
+  uint32_t version = htonl(ct->version);
+  memcpy(header, &version, sizeof(version));
+  header += sizeof(version);
+  
+  uint32_t url_len = htonl(ct->url_len);
+  memcpy(header, &url_len, sizeof(url_len));
+  header += sizeof(url_len);
+  
+  memcpy(header, ct->url, ct->url_len);
+  header += ct->url_len;
+  
+  uint64_t filesize = htonll(ct->filesize);
+  memcpy(header, &filesize, sizeof(filesize));
+  header += sizeof(filesize);
+
+  uint64_t completed_size = htonll(ct->completed_size);
+  memcpy(header, &completed_size, sizeof(completed_size));
+  header += sizeof(completed_size);
+
+  uint32_t block_unit_size = htonl(ct->block_unit_size);
+  memcpy(header, &block_unit_size, sizeof(block_unit_size));
+  header += sizeof(block_unit_size);
+
+  pwrite(file_st->fd, header, header_len, 0);
+}
+*/
 
 static struct ms_file_storage *cast_from(struct ms_istorage *st) {
   return (struct ms_file_storage *)st;

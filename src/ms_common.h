@@ -11,4 +11,6 @@
 
 #include "ms_server.h"
 
+void ms_print_backtrace(void);
+
 #endif /* ms_common_h */

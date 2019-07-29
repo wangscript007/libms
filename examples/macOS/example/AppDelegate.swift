@@ -14,7 +14,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        ms_asnyc_start()
+        MediaServer.start(wait: false)
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
